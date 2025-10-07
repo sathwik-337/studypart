@@ -1288,101 +1288,374 @@ const StudentDashboard = () => {
   }, []);
 
   return (
-    <div className="student-dashboard">
+    <div style={{
+      display: 'flex',
+      minHeight: '100vh',
+      background: '#f8f9fa',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
       {/* Sidebar Navigation */}
-      <div className="sidebar">
-        <div className="profile-section">
-          <img src={studentData.avatar} alt="Profile" className="profile-avatar" />
-          <h3>{studentData.name}</h3>
-          <p>{studentData.email}</p>
+      <div style={{
+        width: '250px',
+        background: '#4CAF50',
+        color: 'white',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <div style={{
+          padding: '2rem 1.5rem',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
+          <h1 style={{
+            color: 'white',
+            fontSize: '1.5rem',
+            fontWeight: '700',
+            margin: '0'
+          }}>{studentData.name}</h1>
+          <p style={{
+            color: 'rgba(255, 255, 255, 0.8)',
+            fontSize: '0.875rem',
+            margin: '0.5rem 0 0'
+          }}>Student Dashboard</p>
         </div>
         
-        <nav className="nav-menu">
+        <nav style={{ flex: 1, padding: '1rem 0' }}>
           <button 
-            className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '1rem 1.5rem',
+              background: activeTab === 'dashboard' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              color: 'white',
+              border: 'none',
+              textAlign: 'left',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderLeft: activeTab === 'dashboard' ? '4px solid white' : '4px solid transparent'
+            }}
             onClick={() => handleTabChange('dashboard')}
+            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+            onMouseLeave={(e) => e.target.style.background = activeTab === 'dashboard' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            <span className="nav-icon">📊</span> Dashboard
+            Dashboard Overview
           </button>
           <button 
-            className={`nav-item ${activeTab === 'jobs' ? 'active' : ''}`}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '1rem 1.5rem',
+              background: activeTab === 'jobs' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              color: 'white',
+              border: 'none',
+              textAlign: 'left',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderLeft: activeTab === 'jobs' ? '4px solid white' : '4px solid transparent'
+            }}
             onClick={() => handleTabChange('jobs')}
+            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+            onMouseLeave={(e) => e.target.style.background = activeTab === 'jobs' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            <span className="nav-icon">💼</span> Browse Jobs
+            Job Management
           </button>
           <button 
-            className={`nav-item ${activeTab === 'events' ? 'active' : ''}`}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '1rem 1.5rem',
+              background: activeTab === 'events' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              color: 'white',
+              border: 'none',
+              textAlign: 'left',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderLeft: activeTab === 'events' ? '4px solid white' : '4px solid transparent'
+            }}
             onClick={() => handleTabChange('events')}
+            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+            onMouseLeave={(e) => e.target.style.background = activeTab === 'events' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            <span className="nav-icon">📅</span> Browse Events
+            Event Management
           </button>
           <button 
-            className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`}
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '1rem 1.5rem',
+              background: activeTab === 'applications' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              color: 'white',
+              border: 'none',
+              textAlign: 'left',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderLeft: activeTab === 'applications' ? '4px solid white' : '4px solid transparent'
+            }}
             onClick={() => handleTabChange('applications')}
+            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+            onMouseLeave={(e) => e.target.style.background = activeTab === 'applications' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            <span className="nav-icon">📋</span> My Applications
+            Applications
+          </button>
+          <button 
+            style={{
+              display: 'block',
+              width: '100%',
+              padding: '1rem 1.5rem',
+              background: activeTab === 'analytics' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              color: 'white',
+              border: 'none',
+              textAlign: 'left',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              borderLeft: activeTab === 'analytics' ? '4px solid white' : '4px solid transparent'
+            }}
+            onClick={() => handleTabChange('analytics')}
+            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
+            onMouseLeave={(e) => e.target.style.background = activeTab === 'analytics' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+          >
+            Analytics
           </button>
         </nav>
-        
-        <button className="logout-btn" onClick={handleLogout}>
-          <span className="nav-icon">🚪</span> Logout
-        </button>
       </div>
 
       {/* Main Content */}
-      <div className="main-content">
+      <div style={{
+        flex: 1,
+        padding: '2rem',
+        background: '#f8f9fa',
+        overflow: 'auto'
+      }}>
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
-          <div className="dashboard-tab">
-            <h1>Dashboard Overview</h1>
+          <div>
+            <h1 style={{
+              fontSize: '2rem',
+              fontWeight: '600',
+              color: '#333',
+              marginBottom: '2rem'
+            }}>Dashboard Overview</h1>
             
-            <div className="stats-grid">
-              <div className="stat-card">
-                <h3>Total Applications</h3>
-                <div className="stat-number">{stats.totalApplications}</div>
+            {/* Stats Cards */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '1.5rem',
+              marginBottom: '2rem'
+            }}>
+              <div style={{
+                background: 'white',
+                padding: '1.5rem',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                borderTop: '4px solid #4CAF50'
+              }}>
+                <h3 style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#666',
+                  margin: '0 0 0.5rem'
+                }}>Active Job Postings</h3>
+                <div style={{
+                  fontSize: '2rem',
+                  fontWeight: '700',
+                  color: '#4CAF50'
+                }}>{mockJobs.length}</div>
               </div>
-              <div className="stat-card accepted">
-                <h3>Accepted</h3>
-                <div className="stat-number">{stats.acceptedApplications}</div>
+              
+              <div style={{
+                background: 'white',
+                padding: '1.5rem',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                borderTop: '4px solid #2196F3'
+              }}>
+                <h3 style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#666',
+                  margin: '0 0 0.5rem'
+                }}>Total Applications</h3>
+                <div style={{
+                  fontSize: '2rem',
+                  fontWeight: '700',
+                  color: '#2196F3'
+                }}>{stats.totalApplications}</div>
               </div>
-              <div className="stat-card pending">
-                <h3>Pending</h3>
-                <div className="stat-number">{stats.pendingApplications}</div>
+              
+              <div style={{
+                background: 'white',
+                padding: '1.5rem',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                borderTop: '4px solid #4CAF50'
+              }}>
+                <h3 style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#666',
+                  margin: '0 0 0.5rem'
+                }}>Upcoming Events</h3>
+                <div style={{
+                  fontSize: '2rem',
+                  fontWeight: '700',
+                  color: '#4CAF50'
+                }}>{mockEvents.length}</div>
               </div>
-              <div className="stat-card rejected">
-                <h3>Rejected</h3>
-                <div className="stat-number">{stats.rejectedApplications}</div>
+              
+              <div style={{
+                background: 'white',
+                padding: '1.5rem',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                borderTop: '4px solid #FF9800'
+              }}>
+                <h3 style={{
+                  fontSize: '0.875rem',
+                  fontWeight: '500',
+                  color: '#666',
+                  margin: '0 0 0.5rem'
+                }}>Success Rate</h3>
+                <div style={{
+                  fontSize: '2rem',
+                  fontWeight: '700',
+                  color: '#FF9800'
+                }}>{stats.totalApplications > 0 ? Math.round((stats.acceptedApplications / stats.totalApplications) * 100) : 0}%</div>
               </div>
             </div>
 
-            <div className="quick-actions">
-              <h2>Quick Actions</h2>
-              <div className="action-buttons">
-                <button onClick={() => handleTabChange('jobs')} className="action-btn">
-                  Browse Jobs
+            {/* Quick Actions */}
+            <div style={{ marginBottom: '2rem' }}>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '1rem'
+              }}>Quick Actions</h2>
+              <div style={{
+                display: 'flex',
+                gap: '1rem',
+                flexWrap: 'wrap'
+              }}>
+                <button 
+                  onClick={() => handleTabChange('jobs')}
+                  style={{
+                    background: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
+                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                >
+                  Browse New Jobs
                 </button>
-                <button onClick={() => handleTabChange('events')} className="action-btn">
-                  Browse Events
+                <button 
+                  onClick={() => handleTabChange('events')}
+                  style={{
+                    background: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
+                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                >
+                  Schedule Event
                 </button>
-                <button onClick={() => handleTabChange('applications')} className="action-btn">
-                  View Applications
+                <button 
+                  onClick={() => handleTabChange('applications')}
+                  style={{
+                    background: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
+                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                >
+                  Review Applications
+                </button>
+                <button 
+                  onClick={() => handleTabChange('analytics')}
+                  style={{
+                    background: '#4CAF50',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '6px',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
+                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                >
+                  View Analytics
                 </button>
               </div>
             </div>
 
-            <div className="recent-activity">
-              <h2>Recent Activity</h2>
-              <div className="activity-list">
-                {applications.slice(0, 3).map(app => (
-                  <div key={app.id} className="activity-item">
-                    <span>{app.type === 'job' ? '💼' : '📅'}</span>
+            {/* Recent Activity */}
+            <div>
+              <h2 style={{
+                fontSize: '1.5rem',
+                fontWeight: '600',
+                color: '#333',
+                marginBottom: '1rem'
+              }}>Recent Activity</h2>
+              <div style={{
+                background: 'white',
+                borderRadius: '8px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                overflow: 'hidden'
+              }}>
+                {applications.slice(0, 3).map((app, index) => (
+                  <div key={app.id} style={{
+                    padding: '1rem 1.5rem',
+                    borderBottom: index < 2 ? '1px solid #eee' : 'none',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
                     <div>
-                      <p><strong>{app.title}</strong></p>
-                      <p>Applied on {app.appliedDate}</p>
+                      <p style={{ margin: '0 0 0.25rem', fontWeight: '500', color: '#333' }}>
+                        New application received for {app.jobTitle} position
+                      </p>
+                      <p style={{ margin: '0', fontSize: '0.875rem', color: '#666' }}>
+                        Applied on {new Date(app.appliedDate).toLocaleDateString()}
+                      </p>
                     </div>
-                    <span className={`status-badge ${app.status}`}>
-                      {app.status}
-                    </span>
+                    <button style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#2196F3',
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                      textDecoration: 'underline'
+                    }}>
+                      View Details
+                    </button>
                   </div>
                 ))}
               </div>
@@ -1392,21 +1665,45 @@ const StudentDashboard = () => {
 
         {/* Browse Jobs Tab */}
         {activeTab === 'jobs' && (
-          <div className="jobs-tab">
-            <h1>Browse Jobs</h1>
+          <div>
+            <h1 style={{
+              fontSize: '2rem',
+              fontWeight: '600',
+              color: '#333',
+              marginBottom: '2rem'
+            }}>Job Management</h1>
             
-            <div className="filters">
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              marginBottom: '2rem',
+              flexWrap: 'wrap'
+            }}>
               <input
                 type="text"
                 placeholder="Search jobs..."
                 value={filters.jobSearch}
                 onChange={(e) => setFilters(prev => ({ ...prev, jobSearch: e.target.value }))}
-                className="search-input"
+                style={{
+                  padding: '0.75rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '6px',
+                  fontSize: '1rem',
+                  flex: '1',
+                  minWidth: '200px'
+                }}
               />
               <select
                 value={filters.jobLocation}
                 onChange={(e) => setFilters(prev => ({ ...prev, jobLocation: e.target.value }))}
-                className="filter-select"
+                style={{
+                  padding: '0.75rem',
+                  border: '1px solid #ddd',
+                  borderRadius: '6px',
+                  fontSize: '1rem',
+                  background: 'white',
+                  minWidth: '150px'
+                }}
               >
                 <option value="">All Locations</option>
                 <option value="San Francisco">San Francisco</option>
