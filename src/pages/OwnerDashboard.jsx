@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import JobManagement from '../components/JobManagement';
+import EventManagement from '../components/EventManagement';
+import ApplicationReview from '../components/ApplicationReview';
+import Analytics from '../components/Analytics';
 
 // Color palette with gradients
 const COLORS = {
@@ -163,30 +167,6 @@ const DashboardOverview = () => {
         <MetricCard title="Conversion Rate" value={metrics.conversionRate} color={COLORS.blue.dark} />
       </div>
 
-      {/* Quick Actions */}
-      <div style={{ 
-        background: COLORS.cardBackground,
-        borderRadius: '20px', 
-        padding: '24px',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.06)'
-      }}>
-        <h2 style={{ 
-          fontSize: '1.25rem', 
-          fontWeight: '600', 
-          marginBottom: '16px',
-          color: COLORS.text
-        }}>Quick Actions</h2>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: '16px' 
-        }}>
-          <QuickActionButton label="Post New Job" />
-          <QuickActionButton label="Schedule Event" />
-          <QuickActionButton label="Review Applications" />
-          <QuickActionButton label="View Analytics" />
-        </div>
-      </div>
 
       {/* Recent Activity */}
       <div style={{ 
@@ -269,62 +249,12 @@ const MetricCard = ({ title, value, color }) => (
   </div>
 );
 
-const QuickActionButton = ({ label }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  
-  return (
-    <button 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{ 
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '12px 24px',
-        background: isHovered ? COLORS.buttonHoverGradient : COLORS.buttonGradient,
-        color: COLORS.white,
-        borderRadius: '12px',
-        border: 'none',
-        cursor: 'pointer',
-        fontWeight: '500',
-        transition: 'all 0.3s ease',
-        boxShadow: isHovered 
-          ? '0 4px 12px rgba(0,128,128,0.2)'
-          : '0 2px 8px rgba(0,128,128,0.1)',
-        transform: isHovered ? 'translateY(-1px)' : 'translateY(0)'
-      }}>
-      <span>{label}</span>
-    </button>
-  );
-};
+
 
 // Other Dashboard Sections (Placeholder components)
-const JobManagement = () => (
-  <div style={{ padding: '24px' }}>
-    <h2 style={{ marginBottom: '24px', fontSize: '1.5rem', fontWeight: '600' }}>Job Management</h2>
-    {/* Job management implementation */}
-  </div>
-);
-
-const EventManagement = () => (
-  <div style={{ padding: '24px' }}>
-    <h2 style={{ marginBottom: '24px', fontSize: '1.5rem', fontWeight: '600' }}>Event Management</h2>
-    {/* Event management implementation */}
-  </div>
-);
 
 const ApplicationsManagement = () => (
-  <div style={{ padding: '24px' }}>
-    <h2 style={{ marginBottom: '24px', fontSize: '1.5rem', fontWeight: '600' }}>Applications</h2>
-    {/* Applications management implementation */}
-  </div>
-);
-
-const Analytics = () => (
-  <div style={{ padding: '24px' }}>
-    <h2 style={{ marginBottom: '24px', fontSize: '1.5rem', fontWeight: '600' }}>Analytics</h2>
-    {/* Analytics implementation */}
-  </div>
+  <ApplicationReview />
 );
 
 const CompanyProfile = () => (
