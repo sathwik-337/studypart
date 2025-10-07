@@ -1,100 +1,111 @@
 import React, { useState } from "react";
-import { auth } from "../firebase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import axios from "axios";
 
-export default function AuthForm({ type = "login", onSuccess }) {
+export default function AuthForm() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [formType, setFormType] = useState(type); // "login" or "signup"
+
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    setError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!isLogin && password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      if (formType === "login") {
-        await signInWithEmailAndPassword(auth, email, password);
-        onSuccess?.(); // callback after login
-        alert("Login successful");
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-        onSuccess?.();
-        alert("Signup successful");
-      }
+      const url = isLogin
+        ? "http://localhost:3001/api/auth/login"
+        : "http://localhost:3001/api/auth/signup";
+
+      const payload = isLogin
+        ? { username, password }
+        : { name, username, email, password };
+
+      const res = await axios.post(url, payload);
+
+      console.log("Response:", res.data);
+
+      // Redirect or update UI based on res.data
+      alert(isLogin ? "Login successful!" : "Signup successful!");
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-8 rounded-xl w-80 relative">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          {formType === "login" ? "Login" : "Sign Up"}
-        </h2>
-
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border p-2 rounded"
-            required
-          />
+    <div style={{ maxWidth: 400, margin: "50px auto" }}>
+      <h2>{isLogin ? "Login" : "Signup"}</h2>
+      <form onSubmit={handleSubmit}>
+        {!isLogin && (
+          <>
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </>
+        )}
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        {!isLogin && (
           <input
             type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border p-2 rounded"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-            disabled={loading}
-          >
-            {loading
-              ? formType === "login"
-                ? "Logging in..."
-                : "Signing up..."
-              : formType === "login"
-              ? "Login"
-              : "Sign Up"}
-          </button>
-        </form>
-
-        <p className="mt-4 text-center text-gray-600 text-sm">
-          {formType === "login" ? (
-            <>
-              Don't have an account?{" "}
-              <span
-                className="text-blue-600 cursor-pointer"
-                onClick={() => setFormType("signup")}
-              >
-                Sign Up
-              </span>
-            </>
-          ) : (
-            <>
-              Already have an account?{" "}
-              <span
-                className="text-blue-600 cursor-pointer"
-                onClick={() => setFormType("login")}
-              >
-                Login
-              </span>
-            </>
-          )}
-        </p>
-      </div>
+        )}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <button type="submit" disabled={loading}>
+          {loading ? "Please wait..." : isLogin ? "Login" : "Signup"}
+        </button>
+      </form>
+      <p style={{ marginTop: 10 }}>
+        {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+        <button onClick={toggleForm} style={{ color: "blue", border: "none", background: "none", cursor: "pointer" }}>
+          {isLogin ? "Signup" : "Login"}
+        </button>
+      </p>
     </div>
   );
 }
