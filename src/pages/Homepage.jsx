@@ -1,26 +1,36 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import AuthForm from "../pages/Authform";
+import { auth } from "../firebase";
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("login");
+  const [user, setUser] = useState(null);
 
-  // Demo auth state. Replace with Firebase or backend auth check.
-  const isLoggedIn = false; // change to true if user is logged in
+  // Listen for Firebase auth state changes
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleFindJobs = () => {
-    if (isLoggedIn) {
-      navigate("/jobs");
-    } else {
-      navigate("/login");
+    if (user) navigate("/jobs");
+    else {
+      setModalType("login");
+      setModalOpen(true);
     }
   };
 
   const handlePostJob = () => {
-    if (isLoggedIn) {
-      navigate("/signup"); // or employer dashboard
-    } else {
-      navigate("/login");
+    if (user) navigate("/post-job"); // or employer dashboard
+    else {
+      setModalType("login");
+      setModalOpen(true);
     }
   };
 
@@ -36,18 +46,29 @@ export default function HomePage() {
           >
             Browse Jobs
           </button>
-          <button
-            onClick={() => navigate("/login")}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            Login
-          </button>
+          {!user ? (
+            <button
+              onClick={() => {
+                setModalType("login");
+                setModalOpen(true);
+              }}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            >
+              Login
+            </button>
+          ) : (
+            <button
+              onClick={() => auth.signOut()}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+            >
+              Logout
+            </button>
+          )}
         </div>
       </nav>
 
       {/* Hero Section */}
       <section className="flex flex-col md:flex-row justify-between items-center px-10 py-16 md:py-24">
-        {/* Text Content */}
         <motion.div
           initial={{ opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
@@ -76,7 +97,6 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* Hero Illustration */}
         <motion.img
           initial={{ opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
@@ -107,7 +127,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Stats Section */}
       <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-center">
         <h2 className="text-3xl font-bold mb-8">Trusted by Students Across India 🇮🇳</h2>
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -130,6 +150,14 @@ export default function HomePage() {
       <footer className="bg-white text-center py-6 text-gray-600 border-t">
         © {new Date().getFullYear()} CampusWorks. All Rights Reserved.
       </footer>
+
+      {/* Login / Signup Modal */}
+      {modalOpen && (
+        <AuthForm
+          type={modalType}
+          onSuccess={() => setModalOpen(false)} // close modal after login/signup
+        />
+      )}
     </div>
   );
 }
