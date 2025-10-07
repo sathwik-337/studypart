@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import OwnerDashboard from './pages/OwnerDashboard';
 import StudentDashboardUnified from "./pages/StudentDashboardUnified";
 import StudentSignup from "./pages/StudentSignup";
+import AuthForm from "./pages/Authform";
 
 function App() {
   return (
@@ -12,9 +13,12 @@ function App() {
       <Route path="/owner-dashboard/*" element={<OwnerDashboard />} />
       <Route path="/student-dashboard" element={<StudentDashboardUnified />} />
       <Route path="/signup" element={<StudentSignup />} />
+      <Route path="/auth" element={<AuthForm/>} />
+
       {/* Placeholder routes (you can replace with real pages later) */}
       <Route path="/jobs" element={<div>Jobs Page</div>} />
       <Route path="/login" element={<div>Login Page</div>} />
+      
     </Routes>
   );
 }
