@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 
 // Inline styles for the Student Dashboard
 const styles = `
@@ -6,20 +7,20 @@ const styles = `
 .student-dashboard {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(135deg, #FFFFFF 0%, #F4F6FB 100%);
+  background: linear-gradient(135deg, #FFFFFF 0%, #E3ECFB 100%);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif;
   color: #1B263B;
 }
 
-/* Sidebar Styles - Teal Gradient */
+/* Sidebar Styles - Blue Gradient Following Homepage */
 .sidebar {
   width: 300px;
-  background: linear-gradient(135deg, #3CB371 0%, #008080 100%);
+  background: linear-gradient(135deg, #4F8EF7 0%, #1B263B 100%);
   color: white;
   padding: 2rem 1.5rem;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(79, 142, 247, 0.2);
   border-radius: 0 24px 24px 0;
   position: relative;
   z-index: 10;
@@ -29,10 +30,11 @@ const styles = `
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .profile-avatar {
@@ -153,10 +155,11 @@ const styles = `
   flex: 1;
   padding: 3rem 2.5rem;
   overflow-y: auto;
-  background: transparent;
+  background: linear-gradient(135deg, #F9FBFF 0%, #EAF1FB 100%);
   margin-left: -24px;
   border-radius: 24px 0 0 24px;
   position: relative;
+  box-shadow: inset 0 1px 0 rgba(79, 142, 247, 0.08);
 }
 
 .main-content h1 {
@@ -165,7 +168,7 @@ const styles = `
   font-size: 2.75rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #1B263B 0%, #3CB371 100%);
+  background: linear-gradient(135deg, #1B263B 0%, #4F8EF7 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -180,15 +183,16 @@ const styles = `
 }
 
 .stat-card {
-  background: #FFFFFF;
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%);
   padding: 2.5rem 2rem;
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(27, 38, 59, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(79, 142, 247, 0.1);
   text-align: center;
-  border: 1px solid rgba(244, 246, 251, 0.8);
+  border: 1px solid rgba(79, 142, 247, 0.08);
   position: relative;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
 }
 
 .stat-card::before {
@@ -198,7 +202,7 @@ const styles = `
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(135deg, #1A73E8 0%, #1558B0 100%);
+  background: linear-gradient(135deg, #4F8EF7 0%, #1A73E8 100%);
 }
 
 .stat-card.accepted::before {
@@ -214,8 +218,9 @@ const styles = `
 }
 
 .stat-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 48px rgba(27, 38, 59, 0.12);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(79, 142, 247, 0.15);
+  border-color: rgba(79, 142, 247, 0.2);
 }
 
 .stat-card h3 {
@@ -394,14 +399,15 @@ const styles = `
 }
 
 .job-card {
-  background: #FFFFFF;
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%);
   padding: 2.5rem 2rem;
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(27, 38, 59, 0.08);
-  border: 1px solid rgba(244, 246, 251, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(79, 142, 247, 0.08);
+  border: 1px solid rgba(79, 142, 247, 0.1);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 
 .job-card::before {
@@ -411,12 +417,13 @@ const styles = `
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(135deg, #3CB371 0%, #008080 100%);
+  background: linear-gradient(135deg, #27AE60 0%, #50C878 100%);
 }
 
 .job-card:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 20px 48px rgba(27, 38, 59, 0.15);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 60px rgba(79, 142, 247, 0.15);
+  border-color: rgba(79, 142, 247, 0.2);
 }
 
 .job-card h3 {
@@ -486,7 +493,7 @@ const styles = `
 }
 
 .apply-btn {
-  background: linear-gradient(135deg, #1A73E8 0%, #1558B0 100%);
+  background: linear-gradient(135deg, #4F8EF7 0%, #1A73E8 100%);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -497,13 +504,13 @@ const styles = `
   width: 100%;
   margin-top: 1rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3);
+  box-shadow: 0 4px 16px rgba(79, 142, 247, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .apply-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(26, 115, 232, 0.4);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(79, 142, 247, 0.4);
 }
 
 /* Events Grid */
@@ -514,14 +521,15 @@ const styles = `
 }
 
 .event-card {
-  background: #FFFFFF;
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%);
   padding: 2.5rem 2rem;
-  border-radius: 24px;
-  box-shadow: 0 8px 32px rgba(27, 38, 59, 0.08);
-  border: 1px solid rgba(244, 246, 251, 0.8);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(79, 142, 247, 0.08);
+  border: 1px solid rgba(79, 142, 247, 0.1);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
 }
 
 .event-card::before {
@@ -535,8 +543,9 @@ const styles = `
 }
 
 .event-card:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 20px 48px rgba(27, 38, 59, 0.15);
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 25px 60px rgba(79, 142, 247, 0.15);
+  border-color: rgba(79, 142, 247, 0.2);
 }
 
 .event-card h3 {
@@ -576,7 +585,7 @@ const styles = `
 }
 
 .register-btn:hover {
-  transform: translateY(-4px);
+  transform: translateY(-4px) scale(1.02);
   box-shadow: 0 8px 24px rgba(39, 174, 96, 0.4);
 }
 
@@ -948,6 +957,139 @@ const styles = `
   }
 }
 
+/* Analytics Tab Styles */
+.analytics-tab {
+  padding: 0;
+}
+
+.analytics-tab h1 {
+  margin-bottom: 2rem;
+}
+
+.progress-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.progress-card {
+  background: linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%);
+  padding: 1.5rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(27, 38, 59, 0.08);
+  border: 1px solid rgba(244, 246, 251, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--card-accent, linear-gradient(135deg, #3CB371 0%, #008080 100%));
+}
+
+.progress-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1B263B;
+  margin-bottom: 1rem;
+}
+
+.progress-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progress-item:last-child {
+  margin-bottom: 0;
+}
+
+.progress-label {
+  color: #4A5A6A;
+  font-size: 0.9rem;
+}
+
+.progress-value {
+  font-weight: 600;
+  color: #1B263B;
+  font-size: 1.1rem;
+}
+
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--item-color, #3CB371);
+}
+
+.activity-item:nth-child(even) {
+  background: rgba(60, 179, 113, 0.05);
+}
+
+.activity-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+  margin-right: 1rem;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-title {
+  margin: 0 0 0.25rem;
+  font-weight: 500;
+  color: #1B263B;
+}
+
+.activity-meta {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #4A5A6A;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.pending {
+  background: #FFF3CD;
+  color: #856404;
+}
+
+.status-badge.accepted {
+  background: #D4EDDA;
+  color: #155724;
+}
+
+.status-badge.rejected {
+  background: #F8D7DA;
+  color: #721C24;
+}
+
 @media (max-width: 480px) {
   .sidebar {
     padding: 1rem;
@@ -974,6 +1116,20 @@ const styles = `
   .quick-actions,
   .recent-activity {
     padding: 2rem 1.5rem;
+  }
+
+  .progress-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .activity-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .activity-icon {
+    margin-right: 0;
   }
 }
 `;
@@ -1045,14 +1201,12 @@ const StudentDashboard = () => {
   const [modalType, setModalType] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
   const [coverLetter, setCoverLetter] = useState('');
-
-  // Mock student data
-  const studentData = {
-    name: "John Doe",
-    email: "john.doe@student.edu",
+  const [studentData, setStudentData] = useState({
+    name: "Student",
+    email: "",
     avatar: "/api/placeholder/50/50",
-    id: "STU001"
-  };
+    id: ""
+  });
 
   // Mock API data
   const mockJobs = [
@@ -1198,34 +1352,165 @@ const StudentDashboard = () => {
     }
   ];
 
-  // Effect to load mock data
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(prev => ({ ...prev, jobs: true, events: true, applications: true }));
-      
-      // Simulate API delay
-      setTimeout(() => {
-        setJobs(mockJobs);
-        setEvents(mockEvents);
-        setApplications(mockApplications);
-        setLoading({ jobs: false, events: false, applications: false });
-      }, 1000);
-    };
+  // API base URL
 
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  // Effect to load real data
+  useEffect(() => {
+    fetchStudentData();
+    fetchJobs();
+    fetchEvents();
+    fetchApplications();
   }, []);
+
+  const fetchStudentData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const user = data.user;
+        setStudentData({
+          name: `${user.first_name} ${user.last_name}`,
+          email: user.email,
+          avatar: "/api/placeholder/50/50",
+          id: user.id
+        });
+      } else {
+        console.error('Failed to fetch student data');
+        // Keep default data if API fails
+      }
+    } catch (error) {
+      console.error('Error fetching student data:', error);
+      // Keep default data if API fails
+    }
+  };
+
+  const fetchJobs = async () => {
+    try {
+      setLoading(prev => ({ ...prev, jobs: true }));
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/jobs`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setJobs(data.jobs || []);
+      } else {
+        console.error('Failed to fetch jobs');
+        setJobs(mockJobs); // Fallback to mock data
+      }
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+      setJobs(mockJobs); // Fallback to mock data
+    } finally {
+      setLoading(prev => ({ ...prev, jobs: false }));
+    }
+  };
+
+  const fetchEvents = async () => {
+    try {
+      setLoading(prev => ({ ...prev, events: true }));
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/events`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data.events || []);
+      } else {
+        console.error('Failed to fetch events');
+        setEvents(mockEvents); // Fallback to mock data
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents(mockEvents); // Fallback to mock data
+    } finally {
+      setLoading(prev => ({ ...prev, events: false }));
+    }
+  };
+
+  const fetchApplications = async () => {
+    try {
+      setLoading(prev => ({ ...prev, applications: true }));
+      const token = localStorage.getItem('token');
+      
+      // Fetch both job applications and event applications
+      const [jobApplicationsResponse, eventApplicationsResponse] = await Promise.all([
+        fetch(`${API_BASE_URL}/api/v1/applications`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }),
+        fetch(`${API_BASE_URL}/api/v1/events/my-applications`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        })
+      ]);
+
+      let allApplications = [];
+
+      if (jobApplicationsResponse.ok) {
+        const jobData = await jobApplicationsResponse.json();
+        const jobApps = (jobData.applications || []).map(app => ({
+          ...app,
+          type: 'job',
+          title: app.job_title,
+          company: app.company_name
+        }));
+        allApplications = [...allApplications, ...jobApps];
+      }
+
+      if (eventApplicationsResponse.ok) {
+        const eventData = await eventApplicationsResponse.json();
+        const eventApps = (eventData.applications || []).map(app => ({
+          ...app,
+          type: 'event',
+          title: app.event_title || app.title,
+          company: app.organizer_name
+        }));
+        allApplications = [...allApplications, ...eventApps];
+      }
+
+      // Sort by applied_at date (most recent first)
+      allApplications.sort((a, b) => new Date(b.applied_at) - new Date(a.applied_at));
+      
+      setApplications(allApplications);
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+      setApplications(mockApplications); // Fallback to mock data
+    } finally {
+      setLoading(prev => ({ ...prev, applications: false }));
+    }
+  };
 
   // Filter functions
   const filteredJobs = jobs.filter(job =>
-    job.title.toLowerCase().includes(filters.jobSearch.toLowerCase()) &&
-    (filters.jobLocation === '' || job.location.includes(filters.jobLocation)) &&
+    (job.title || '').toLowerCase().includes(filters.jobSearch.toLowerCase()) &&
+    (filters.jobLocation === '' || (job.location || '').includes(filters.jobLocation)) &&
     (filters.jobType === '' || job.type === filters.jobType)
   );
 
   const filteredEvents = events.filter(event =>
-    event.name.toLowerCase().includes(filters.eventSearch.toLowerCase()) &&
-    (filters.eventLocation === '' || event.location.includes(filters.eventLocation))
+    (event.name || '').toLowerCase().includes(filters.eventSearch.toLowerCase()) &&
+    (filters.eventLocation === '' || (event.location || '').includes(filters.eventLocation))
   );
 
   // Statistics calculations
@@ -1254,22 +1539,60 @@ const StudentDashboard = () => {
   };
 
   const handleSubmitApplication = async () => {
-    const newApplication = {
-      id: applications.length + 1,
-      type: modalType,
-      title: selectedItem.title || selectedItem.name,
-      company: selectedItem.company || 'University',
-      appliedDate: new Date().toISOString().split('T')[0],
-      status: 'pending'
-    };
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (modalType === 'job') {
+        // Submit job application
+        const response = await fetch(`${API_BASE_URL}/api/v1/jobs/${selectedItem.id}/apply`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            cover_letter: coverLetter
+          })
+        });
 
-    setApplications(prev => [...prev, newApplication]);
-    setShowModal(false);
-    setCoverLetter('');
-    setSelectedItem(null);
-    
-    // Show success message
-    alert(`Successfully ${modalType === 'job' ? 'applied for' : 'registered for'} ${newApplication.title}!`);
+        if (response.ok) {
+          await fetchApplications(); // Refresh applications
+          setShowModal(false);
+          setCoverLetter('');
+          setSelectedItem(null);
+          alert(`Successfully applied for ${selectedItem.title}!`);
+        } else {
+          const errorData = await response.json();
+          alert(`Application failed: ${errorData.message || 'Unknown error occurred'}`);
+        }
+      } else if (modalType === 'event') {
+        // Submit event application
+        const response = await fetch(`${API_BASE_URL}/api/v1/events/${selectedItem.id}/apply`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            cover_letter: coverLetter
+          })
+        });
+
+        if (response.ok) {
+          await fetchApplications(); // Refresh applications
+          setShowModal(false);
+          setCoverLetter('');
+          setSelectedItem(null);
+          alert(`Successfully registered for ${selectedItem.title || selectedItem.name}!`);
+        } else {
+          const errorData = await response.json();
+          alert(`Registration failed: ${errorData.message || 'Unknown error occurred'}`);
+        }
+      }
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      alert('Network error occurred. Please try again.');
+    }
   };
 
   const handleLogout = () => {
@@ -1480,7 +1803,7 @@ const StudentDashboard = () => {
                   fontSize: '2rem',
                   fontWeight: '800',
                   color: '#1B263B'
-                }}>{mockJobs.length}</div>
+                }}>{jobs.length}</div>
               </div>
               
               <div style={{
@@ -1544,7 +1867,7 @@ const StudentDashboard = () => {
                   fontSize: '2rem',
                   fontWeight: '800',
                   color: '#1B263B'
-                }}>{mockEvents.length}</div>
+                }}>{events.length}</div>
               </div>
               
               <div style={{
@@ -1822,17 +2145,29 @@ const StudentDashboard = () => {
               <div className="jobs-grid">
                 {filteredJobs.map(job => (
                   <div key={job.id} className="job-card">
-                    <h3>{job.title}</h3>
-                    <p className="company">{job.company}</p>
-                    <p className="location">📍 {job.location}</p>
-                    <p className="type">🏷️ {job.type}</p>
-                    <p className="description">{job.description}</p>
+                    <h3>{job.title || 'Untitled Job'}</h3>
+                    <p className="company">{job.company || 'Company Name'}</p>
+                    <p className="location">📍 {job.location || 'Location not specified'}</p>
+                    <p className="type">🏷️ {job.type || 'Job Type'}</p>
+                    <p className="description">{job.description || 'No description available'}</p>
                     <div className="requirements">
                       <strong>Requirements:</strong>
                       <div className="requirement-tags">
-                        {job.requirements.map(req => (
-                          <span key={req} className="requirement-tag">{req}</span>
-                        ))}
+                        {(() => {
+                          let requirements = [];
+                          try {
+                            if (Array.isArray(job.requirements)) {
+                              requirements = job.requirements;
+                            } else if (typeof job.requirements === 'string') {
+                              requirements = JSON.parse(job.requirements);
+                            }
+                          } catch (e) {
+                            requirements = [];
+                          }
+                          return requirements.map(req => (
+                            <span key={req} className="requirement-tag">{req}</span>
+                          ));
+                        })()}
                       </div>
                     </div>
                     <button 
@@ -1879,11 +2214,11 @@ const StudentDashboard = () => {
               <div className="events-grid">
                 {filteredEvents.map(event => (
                   <div key={event.id} className="event-card">
-                    <h3>{event.name}</h3>
-                    <p className="date">📅 {event.date}</p>
-                    <p className="time">🕐 {event.time}</p>
-                    <p className="location">📍 {event.location}</p>
-                    <p className="description">{event.description}</p>
+                    <h3>{event.name || 'Untitled Event'}</h3>
+                    <p className="date">📅 {event.date || 'Date TBD'}</p>
+                    <p className="time">🕐 {event.time || 'Time TBD'}</p>
+                    <p className="location">📍 {event.location || 'Location TBD'}</p>
+                    <p className="description">{event.description || 'No description available'}</p>
                     <button 
                       className="register-btn"
                       onClick={() => handleRegisterEvent(event)}
@@ -1931,6 +2266,318 @@ const StudentDashboard = () => {
                 )}
               </div>
             )}
+          </div>
+        )}
+
+        {/* Analytics/My Progress Tab */}
+        {activeTab === 'analytics' && (
+          <div className="analytics-tab">
+            <h1 style={{
+              fontSize: '2rem',
+              fontWeight: '600',
+              color: '#1B263B',
+              marginBottom: '2rem',
+              background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>My Progress</h1>
+            
+            {/* Progress Overview Cards */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '1.5rem',
+              marginBottom: '2rem'
+            }}>
+              {/* Applications Summary */}
+              <div style={{
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+                padding: '1.5rem',
+                borderRadius: '20px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)'
+                }}></div>
+                <h3 style={{
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  color: '#1B263B',
+                  marginBottom: '1rem'
+                }}>Applications Summary</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#4A5A6A', fontSize: '0.9rem' }}>Total Applications</span>
+                    <span style={{ fontWeight: '600', color: '#1B263B', fontSize: '1.1rem' }}>
+                      {stats.totalApplications}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#4A5A6A', fontSize: '0.9rem' }}>Pending Review</span>
+                    <span style={{ fontWeight: '600', color: '#FF8C00', fontSize: '1.1rem' }}>
+                      {stats.pendingApplications}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#4A5A6A', fontSize: '0.9rem' }}>Success Rate</span>
+                    <span style={{ fontWeight: '600', color: '#3CB371', fontSize: '1.1rem' }}>
+                      {stats.totalApplications > 0 
+                        ? Math.round(((stats.totalApplications - stats.rejectedApplications) / stats.totalApplications) * 100) 
+                        : 0}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Activity Level */}
+              <div style={{
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+                padding: '1.5rem',
+                borderRadius: '20px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(135deg, #1A73E8 0%, #4285F4 100%)'
+                }}></div>
+                <h3 style={{
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  color: '#1B263B',
+                  marginBottom: '1rem'
+                }}>Activity Level</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#4A5A6A', fontSize: '0.9rem' }}>Jobs Applied</span>
+                    <span style={{ fontWeight: '600', color: '#1B263B', fontSize: '1.1rem' }}>
+                      {applications.filter(app => app.type === 'job').length}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#4A5A6A', fontSize: '0.9rem' }}>Events Registered</span>
+                    <span style={{ fontWeight: '600', color: '#1B263B', fontSize: '1.1rem' }}>
+                      {applications.filter(app => app.type === 'event').length}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: '#4A5A6A', fontSize: '0.9rem' }}>This Month</span>
+                    <span style={{ fontWeight: '600', color: '#4285F4', fontSize: '1.1rem' }}>
+                      {applications.filter(app => {
+                        const appDate = new Date(app.appliedDate);
+                        const now = new Date();
+                        return appDate.getMonth() === now.getMonth() && appDate.getFullYear() === now.getFullYear();
+                      }).length}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Profile Completeness */}
+              <div style={{
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+                padding: '1.5rem',
+                borderRadius: '20px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)'
+                }}></div>
+                <h3 style={{
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  color: '#1B263B',
+                  marginBottom: '1rem'
+                }}>Profile Completeness</h3>
+                <div style={{ marginBottom: '1rem' }}>
+                  <div style={{
+                    width: '100%',
+                    height: '8px',
+                    background: '#E3E7EB',
+                    borderRadius: '4px',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      width: '75%',
+                      height: '100%',
+                      background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
+                      borderRadius: '4px'
+                    }}></div>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: '0.5rem'
+                  }}>
+                    <span style={{ fontSize: '0.9rem', color: '#4A5A6A' }}>Complete</span>
+                    <span style={{ fontWeight: '600', color: '#FF6B6B', fontSize: '1.1rem' }}>75%</span>
+                  </div>
+                </div>
+                <p style={{ 
+                  fontSize: '0.875rem', 
+                  color: '#4A5A6A', 
+                  margin: 0,
+                  lineHeight: '1.4'
+                }}>
+                  Add more details to your profile to increase your chances of getting hired!
+                </p>
+              </div>
+            </div>
+
+            {/* Application Status Chart */}
+            <div style={{
+              background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+              padding: '2rem',
+              borderRadius: '20px',
+              boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+              border: '1px solid rgba(244, 246, 251, 0.8)',
+              marginBottom: '2rem'
+            }}>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: '600',
+                color: '#1B263B',
+                marginBottom: '1.5rem'
+              }}>Application Status Breakdown</h3>
+              
+              {stats.totalApplications > 0 ? (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center' }}>
+                  {/* Status indicators */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: '#FF8C00',
+                      borderRadius: '50%'
+                    }}></div>
+                    <span style={{ fontSize: '0.9rem', color: '#4A5A6A' }}>
+                      Pending ({stats.pendingApplications})
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: '#3CB371',
+                      borderRadius: '50%'
+                    }}></div>
+                    <span style={{ fontSize: '0.9rem', color: '#4A5A6A' }}>
+                      Accepted ({(stats.totalApplications - stats.pendingApplications - stats.rejectedApplications)})
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: '#FF6B6B',
+                      borderRadius: '50%'
+                    }}></div>
+                    <span style={{ fontSize: '0.9rem', color: '#4A5A6A' }}>
+                      Rejected ({stats.rejectedApplications})
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <p style={{ color: '#4A5A6A', fontStyle: 'italic' }}>
+                  No application data available yet. Start applying to jobs and events to see your progress!
+                </p>
+              )}
+            </div>
+
+            {/* Recent Activity Timeline */}
+            <div style={{
+              background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+              padding: '2rem',
+              borderRadius: '20px',
+              boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+              border: '1px solid rgba(244, 246, 251, 0.8)'
+            }}>
+              <h3 style={{
+                fontSize: '1.3rem',
+                fontWeight: '600',
+                color: '#1B263B',
+                marginBottom: '1.5rem'
+              }}>Recent Activity</h3>
+              
+              {applications.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {applications.slice(0, 5).map((app, index) => (
+                    <div key={app.id} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '1rem',
+                      background: index % 2 === 0 ? 'rgba(60, 179, 113, 0.05)' : 'transparent',
+                      borderRadius: '12px',
+                      borderLeft: `4px solid ${app.type === 'job' ? '#3CB371' : '#4285F4'}`
+                    }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        background: app.type === 'job' 
+                          ? 'linear-gradient(135deg, #3CB371 0%, #008080 100%)'
+                          : 'linear-gradient(135deg, #1A73E8 0%, #4285F4 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '1.2rem',
+                        marginRight: '1rem'
+                      }}>
+                        {app.type === 'job' ? '💼' : '📅'}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <p style={{ margin: '0 0 0.25rem', fontWeight: '500', color: '#1B263B' }}>
+                          Applied for {app.title}
+                        </p>
+                        <p style={{ margin: '0', fontSize: '0.875rem', color: '#4A5A6A' }}>
+                          {app.company} • {new Date(app.appliedDate).toLocaleDateString()}
+                        </p>
+                      </div>
+                      <div style={{
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        fontWeight: '500',
+                        background: app.status === 'pending' ? '#FFF3CD' : 
+                                   app.status === 'accepted' ? '#D4EDDA' : '#F8D7DA',
+                        color: app.status === 'pending' ? '#856404' : 
+                               app.status === 'accepted' ? '#155724' : '#721C24'
+                      }}>
+                        {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ color: '#4A5A6A', fontStyle: 'italic' }}>
+                  No recent activity. Start exploring jobs and events to build your activity timeline!
+                </p>
+              )}
+            </div>
           </div>
         )}
         </div>

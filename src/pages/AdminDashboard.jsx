@@ -1,4 +1,37 @@
 import React, { useState, useEffect } from 'react';
+import StudentRegistrationManagement from '../components/StudentRegistrationManagement';
+import API_BASE_URL, { API_ENDPOINTS } from '../config/api';
+
+// Homepage color palette
+const COLORS = {
+  white: "#FFFFFF",
+  background: "linear-gradient(135deg, #E3ECFB 0%, #F9FBFF 100%)",
+  alternateBackground: "#EAF1FB",
+  primary: {
+    main: "#4F8EF7",
+    secondary: "#1A73E8",
+    dark: "#1B263B",
+    gradient: "linear-gradient(135deg, #4F8EF7 0%, #1A73E8 100%)"
+  },
+  accent: {
+    green: "#27AE60",
+    lightGreen: "#50C878",
+    gradient: "linear-gradient(135deg, #27AE60 0%, #50C878 100%)"
+  },
+  light: {
+    blue: "#8CC1FF",
+    background: "#E3ECFB",
+    secondary: "#EAF1FB"
+  },
+  text: "#1B263B",
+  subText: "#6B7280",
+  border: "rgba(79, 142, 247, 0.1)",
+  cardBackground: "linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)",
+  sidebarGradient: "linear-gradient(135deg, #4F8EF7 0%, #1A73E8 100%)",
+  buttonGradient: "linear-gradient(135deg, #4F8EF7 0%, #1A73E8 100%)",
+  buttonHoverGradient: "linear-gradient(135deg, #1A73E8 0%, #1B263B 100%)",
+  statusGradient: "linear-gradient(135deg, #27AE60 0%, #50C878 100%)"
+};
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -8,56 +41,156 @@ const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
   const [systemStats, setSystemStats] = useState({});
   const [activityLog, setActivityLog] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for demonstration
+  // Fetch real data from API
   useEffect(() => {
-    // Initialize mock data
-    setUsers([
-      { id: 1, name: 'John Student', email: 'john@student.com', role: 'student', status: 'active', joinDate: '2024-01-15' },
-      { id: 2, name: 'Jane Owner', email: 'jane@company.com', role: 'owner', status: 'active', joinDate: '2024-02-20' },
-      { id: 3, name: 'Mike Admin', email: 'mike@admin.com', role: 'admin', status: 'active', joinDate: '2024-01-01' },
-      { id: 4, name: 'Sarah Student', email: 'sarah@student.com', role: 'student', status: 'suspended', joinDate: '2024-03-10' }
-    ]);
-
-    setCompanies([
-      { id: 1, name: 'Tech Corp', status: 'verified', owner: 'Jane Owner', employees: 150, industry: 'Technology' },
-      { id: 2, name: 'Design Studio', status: 'pending', owner: 'Bob Designer', employees: 25, industry: 'Design' },
-      { id: 3, name: 'Marketing Pro', status: 'rejected', owner: 'Alice Marketer', employees: 50, industry: 'Marketing' }
-    ]);
-
-    setJobs([
-      { id: 1, title: 'Frontend Developer', company: 'Tech Corp', status: 'approved', applications: 45, posted: '2024-10-01' },
-      { id: 2, title: 'UX Designer', company: 'Design Studio', status: 'pending', applications: 12, posted: '2024-10-05' },
-      { id: 3, title: 'Marketing Manager', company: 'Marketing Pro', status: 'flagged', applications: 8, posted: '2024-10-03' }
-    ]);
-
-    setEvents([
-      { id: 1, title: 'Tech Conference 2024', organizer: 'Tech Corp', status: 'approved', attendees: 200, date: '2024-11-15' },
-      { id: 2, title: 'Design Workshop', organizer: 'Design Studio', status: 'pending', attendees: 30, date: '2024-10-20' },
-      { id: 3, title: 'Marketing Summit', organizer: 'Marketing Pro', status: 'approved', attendees: 150, date: '2024-12-01' }
-    ]);
-
-    setSystemStats({
-      totalUsers: 1247,
-      totalStudents: 980,
-      totalOwners: 245,
-      totalAdmins: 22,
-      activeJobs: 156,
-      totalApplications: 3420,
-      totalEvents: 89,
-      systemUptime: '99.9%',
-      serverLoad: '45%',
-      storageUsed: '67%'
-    });
-
-    setActivityLog([
-      { id: 1, action: 'User Registration', user: 'new.student@email.com', timestamp: '2 minutes ago', type: 'user' },
-      { id: 2, action: 'Job Posted', user: 'tech.corp@company.com', timestamp: '15 minutes ago', type: 'content' },
-      { id: 3, action: 'Company Verified', user: 'admin@platform.com', timestamp: '1 hour ago', type: 'admin' },
-      { id: 4, action: 'User Suspended', user: 'admin@platform.com', timestamp: '2 hours ago', type: 'security' },
-      { id: 5, action: 'Event Approved', user: 'admin@platform.com', timestamp: '3 hours ago', type: 'content' }
-    ]);
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+
+      // Fetch real statistics from the backend
+      await Promise.all([
+        fetchUsers(),
+        fetchCompanies(),
+        fetchJobs(),
+        fetchEvents(),
+        fetchSystemStats(),
+        fetchActivityLog()
+      ]);
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/admin/users`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data.users || []);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setUsers([]);
+    }
+  };
+
+  const fetchCompanies = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/companies`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setCompanies(data.companies || []);
+      }
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+      setCompanies([]);
+    }
+  };
+
+  const fetchJobs = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/jobs`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setJobs(data.jobs || []);
+      }
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+      setJobs([]);
+    }
+  };
+
+  const fetchEvents = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/events`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data.events || []);
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setEvents([]);
+    }
+  };
+
+  const fetchSystemStats = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/admin/stats`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSystemStats(data.stats || {
+          totalUsers: 0,
+          totalStudents: 0,
+          totalOwners: 0,
+          totalAdmins: 0,
+          pendingRegistrations: 0,
+          approvedStudents: 0,
+          activeJobs: 0,
+          totalApplications: 0,
+          totalEvents: 0,
+          systemUptime: '100%'
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching system stats:', error);
+      setSystemStats({
+        totalUsers: 0,
+        totalStudents: 0,
+        totalOwners: 0,
+        totalAdmins: 0,
+        pendingRegistrations: 0,
+        approvedStudents: 0,
+        activeJobs: 0,
+        totalApplications: 0,
+        totalEvents: 0,
+        systemUptime: '100%'
+      });
+    }
+  };
+
+  const fetchActivityLog = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/v1/admin/activity`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setActivityLog(data.activities || []);
+      }
+    } catch (error) {
+      console.error('Error fetching activity log:', error);
+      setActivityLog([]);
+    }
+  };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -122,10 +255,10 @@ const AdminDashboard = () => {
           boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
           border: '1px solid rgba(244, 246, 251, 0.8)'
         }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Total Users</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#1B263B' }}>{systemStats.totalUsers}</div>
+          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Approved Students</h3>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#059669' }}>{systemStats.approvedStudents || 0}</div>
           <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
-            Students: {systemStats.totalStudents} | Owners: {systemStats.totalOwners}
+            Active student accounts
           </div>
         </div>
 
@@ -136,10 +269,10 @@ const AdminDashboard = () => {
           boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
           border: '1px solid rgba(244, 246, 251, 0.8)'
         }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Active Jobs</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#059669' }}>{systemStats.activeJobs}</div>
+          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Pending Registrations</h3>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#F59E0B' }}>{systemStats.pendingRegistrations || 0}</div>
           <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
-            {systemStats.totalApplications} total applications
+            Awaiting approval
           </div>
         </div>
 
@@ -150,10 +283,10 @@ const AdminDashboard = () => {
           boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
           border: '1px solid rgba(244, 246, 251, 0.8)'
         }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Total Events</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#7C3AED' }}>{systemStats.totalEvents}</div>
+          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Total Companies</h3>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#7C3AED' }}>{systemStats.totalCompanies || 0}</div>
           <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
-            Active and upcoming
+            Registered companies
           </div>
         </div>
 
@@ -164,10 +297,10 @@ const AdminDashboard = () => {
           boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
           border: '1px solid rgba(244, 246, 251, 0.8)'
         }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>System Health</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#059669' }}>{systemStats.systemUptime}</div>
+          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Total Applications</h3>
+          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#059669' }}>{systemStats.totalApplications || 0}</div>
           <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
-            Uptime | Load: {systemStats.serverLoad}
+            Job applications submitted
           </div>
         </div>
       </div>
@@ -979,6 +1112,32 @@ const AdminDashboard = () => {
     </div>
   );
 
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        background: '#F4F6FB',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '4px solid #DC2626',
+            borderTop: '4px solid transparent',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 1rem'
+          }}></div>
+          <p style={{ color: '#6B7280', fontSize: '1rem' }}>Loading admin dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{
       display: 'flex',
@@ -1014,6 +1173,7 @@ const AdminDashboard = () => {
         <nav style={{ flex: 1, padding: '1rem 0' }}>
           {[
             { key: 'dashboard', label: 'Dashboard Overview', icon: '📊' },
+            { key: 'student-registrations', label: 'Student Registrations', icon: '🎓' },
             { key: 'users', label: 'User Management', icon: '👥' },
             { key: 'companies', label: 'Company Management', icon: '🏢' },
             { key: 'content', label: 'Content Management', icon: '📝' },
@@ -1077,6 +1237,7 @@ const AdminDashboard = () => {
         overflow: 'auto'
       }}>
         {activeTab === 'dashboard' && renderDashboardOverview()}
+        {activeTab === 'student-registrations' && <StudentRegistrationManagement />}
         {activeTab === 'users' && renderUserManagement()}
         {activeTab === 'companies' && renderCompanyManagement()}
         {activeTab === 'content' && renderContentManagement()}
@@ -1086,5 +1247,15 @@ const AdminDashboard = () => {
     </div>
   );
 };
+
+// Add CSS animation for loading spinner
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+document.head.appendChild(style);
 
 export default AdminDashboard;

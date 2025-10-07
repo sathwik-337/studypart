@@ -5,29 +5,32 @@
 // previous NODE_ENV-based defaults.
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || (process.env.NODE_ENV === 'production'
   ? 'https://your-production-domain.com'
-  : 'http://localhost:3001');
+  : 'http://localhost:5000');
 
 export default API_BASE_URL;
 export const API_ENDPOINTS = {
   // Auth
-  signup: '/api/auth/signup',
-  login: '/api/auth/login',
+  signup: '/api/v1/auth/register',
+  login: '/api/v1/auth/login',
   
-  // Colleges
-  colleges: '/api/colleges',
+  // Student Registration (for approval system)
+  studentSignup: '/api/v1/student-registration/request',
+  
+  // Colleges (if needed)
+  colleges: '/api/v1/colleges',
   
   // Admin
-  pendingStudents: '/api/admin/pending-students',
-  approveStudent: '/api/admin/approve-student',
-  rejectStudent: '/api/admin/reject-student',
-  getPdf: '/api/admin/pdf',
+  pendingStudents: '/api/v1/student-registration/requests',
+  approveStudent: '/api/v1/student-registration/approve',
+  rejectStudent: '/api/v1/student-registration/reject',
+  getPdf: '/api/v1/student-registration/pdf',
   
   // Jobs
-  jobs: '/api/jobs',
-  jobsByOwner: '/api/jobs/owner',
+  jobs: '/api/v1/jobs',
+  jobsByOwner: '/api/v1/jobs/owner',
   
   // Events
-  events: '/api/events',
+  events: '/api/v1/events',
   eventsByOwner: '/api/events/owner',
   
   // Applications

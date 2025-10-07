@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import EditEvent from './EditEvent';
 import ViewEventDetails from './ViewEventDetails';
+import API_BASE_URL from '../config/api';
 
 const COLORS = {
   white: "#FFFFFF",
@@ -19,38 +20,105 @@ const COLORS = {
 
 const EventManagement = () => {
   const navigate = useNavigate();
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: 'Tech Talk Series',
-      date: '2025-10-15',
-      time: '14:00',
-      location: 'Virtual',
-      type: 'Webinar',
-      maxParticipants: 100,
-      registrationDeadline: '2025-10-14',
-      remuneration: 0,
-      description: 'Join us for an insightful tech talk series...'
-    },
-    {
-      id: 2,
-      title: 'Career Fair',
-      date: '2025-10-20',
-      time: '10:00',
-      location: 'Main Campus',
-      type: 'In-Person',
-      maxParticipants: 500,
-      registrationDeadline: '2025-10-18',
-      remuneration: 1000,
-      description: 'Annual career fair with leading tech companies...'
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchMyEvents();
+  }, []);
+
+  const fetchMyEvents = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      
+      // Use the owner-specific endpoint to get only the owner's events
+      const response = await fetch(`${API_BASE_URL}/api/v1/events/owner/my-events`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setEvents(data.events || []);
+      } else {
+        setError('Failed to fetch your events');
+      }
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      setError('Error loading events');
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
+
+  const handleCreateEvent = async (eventData) => {
+    try {
+      console.log('Creating event with data:', eventData);
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        setError('No authentication token found');
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/v1/events`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: eventData.title,
+          description: eventData.description,
+          event_type: eventData.type.toLowerCase(),
+          start_date: `${eventData.date} ${eventData.time}:00`,
+          end_date: `${eventData.date} ${eventData.endTime || '23:59'}:00`,
+          location: eventData.location,
+          is_virtual: eventData.type === 'webinar',
+          meeting_link: eventData.type === 'webinar' ? eventData.meetingLink : null,
+          capacity: eventData.maxParticipants ? parseInt(eventData.maxParticipants) : null
+        })
+      });
+
+      const responseData = await response.json();
+      console.log('Create event response:', responseData);
+
+      if (response.ok) {
+        alert('Event created successfully!');
+        await fetchMyEvents(); // Refresh the events list
+        navigate('..'); // Navigate back to the events list
+        setError(''); // Clear any errors
+      } else {
+        setError(responseData.message || 'Failed to create event');
+        console.error('Failed to create event:', responseData);
+      }
+    } catch (error) {
+      console.error('Error creating event:', error);
+      setError('Error creating event: ' + error.message);
+    }
+  };
 
   return (
     <div style={{ padding: '24px' }}>
       <Routes>
-        <Route path="/" element={<EventList events={events} setEvents={setEvents} />} />
-        <Route path="/create" element={<CreateEvent events={events} setEvents={setEvents} />} />
+        <Route path="/" element={
+          <EventList 
+            events={events} 
+            loading={loading} 
+            error={error}
+            navigate={navigate} 
+          />
+        } />
+        <Route path="/create" element={
+          <CreateEvent 
+            onSubmit={handleCreateEvent}
+            onCancel={() => navigate('..')}
+          />
+        } />
         <Route path="/edit/:eventId" element={<EditEvent events={events} setEvents={setEvents} />} />
         <Route path="/view/:eventId" element={<ViewEventDetails events={events} onBack={() => navigate('/owner/events')} />} />
       </Routes>
@@ -58,8 +126,24 @@ const EventManagement = () => {
   );
 };
 
-const EventList = ({ events, setEvents }) => {
-  const navigate = useNavigate();
+const EventList = ({ events, loading, error, navigate }) => {
+
+  if (loading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px' }}>
+        <div style={{ 
+          display: 'inline-block',
+          width: '40px',
+          height: '40px',
+          border: '4px solid #f3f3f3',
+          borderTop: '4px solid #008080',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+        <p style={{ marginTop: '16px', color: COLORS.subText }}>Loading events...</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -85,7 +169,32 @@ const EventList = ({ events, setEvents }) => {
         </button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {error && (
+        <div style={{
+          background: '#fee',
+          border: '1px solid #fcc',
+          color: '#c33',
+          padding: '12px',
+          borderRadius: '8px',
+          marginBottom: '16px'
+        }}>
+          {error}
+        </div>
+      )}
+
+      {events.length === 0 ? (
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '40px',
+          background: COLORS.cardBackground,
+          borderRadius: '12px'
+        }}>
+          <p style={{ color: COLORS.subText, fontSize: '16px' }}>
+            No events found. Create your first event to get started!
+          </p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {events.map(event => (
           <div
             key={event.id}
@@ -114,15 +223,12 @@ const EventList = ({ events, setEvents }) => {
                   </div>
                   <div>
                     <p style={{ color: COLORS.subText }}>Registration Deadline:</p>
-                    <p style={{ color: COLORS.text, fontWeight: '500' }}>{event.registrationDeadline}</p>
+                    <p style={{ color: COLORS.text, fontWeight: '500' }}>{event.registration_deadline || 'No deadline set'}</p>
                   </div>
                   <div>
-                    <p style={{ color: COLORS.subText }}>Remuneration:</p>
-                    <p style={{ color: COLORS.text, fontWeight: '500' }}>
-                      {event.remuneration > 0 
-                        ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(event.remuneration)
-                        : 'No remuneration'
-                      }
+                    <p style={{ color: COLORS.subText }}>Event Type:</p>
+                    <p style={{ color: COLORS.text, fontWeight: '500', textTransform: 'capitalize' }}>
+                      {event.event_type}
                     </p>
                   </div>
                 </div>
@@ -158,33 +264,28 @@ const EventList = ({ events, setEvents }) => {
             </div>
           </div>
         ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
 
-const CreateEvent = ({ events, setEvents }) => {
-  const navigate = useNavigate();
+const CreateEvent = ({ onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     title: '',
     date: '',
     time: '',
+    endTime: '',
     location: '',
-    type: 'Virtual',
+    type: 'catering',
     description: '',
     maxParticipants: '',
-    registrationDeadline: '',
-    remuneration: ''
+    meetingLink: ''
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newEvent = {
-      ...formData,
-      id: events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1
-    };
-    setEvents([...events, newEvent]);
-    navigate('/owner/events');
+    onSubmit(formData);
   };
 
   const handleChange = (e) => {
@@ -217,7 +318,7 @@ const CreateEvent = ({ events, setEvents }) => {
             />
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '8px' }}>Date</label>
               <input
@@ -235,11 +336,27 @@ const CreateEvent = ({ events, setEvents }) => {
               />
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '8px' }}>Time</label>
+              <label style={{ display: 'block', marginBottom: '8px' }}>Start Time</label>
               <input
                 type="time"
                 name="time"
                 value={formData.time}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: `1px solid ${COLORS.border}`,
+                  borderRadius: '8px'
+                }}
+                required
+              />
+            </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '8px' }}>End Time</label>
+              <input
+                type="time"
+                name="endTime"
+                value={formData.endTime}
                 onChange={handleChange}
                 style={{
                   width: '100%',
@@ -265,13 +382,34 @@ const CreateEvent = ({ events, setEvents }) => {
                 border: `1px solid ${COLORS.border}`,
                 borderRadius: '8px'
               }}
+              placeholder={formData.type === 'webinar' ? 'Virtual' : 'Enter event location'}
               required
             />
           </div>
 
+          {formData.type === 'webinar' && (
+            <div>
+              <label style={{ display: 'block', marginBottom: '8px' }}>Meeting Link</label>
+              <input
+                type="url"
+                name="meetingLink"
+                value={formData.meetingLink}
+                onChange={handleChange}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  border: `1px solid ${COLORS.border}`,
+                  borderRadius: '8px'
+                }}
+                placeholder="https://zoom.us/j/123456789 or similar"
+              />
+            </div>
+          )}
+
           <div>
             <label style={{ display: 'block', marginBottom: '8px' }}>Event Type</label>
-            <select
+            <input
+              type="text"
               name="type"
               value={formData.type}
               onChange={handleChange}
@@ -281,12 +419,8 @@ const CreateEvent = ({ events, setEvents }) => {
                 border: `1px solid ${COLORS.border}`,
                 borderRadius: '8px'
               }}
-              required
-            >
-              <option value="Virtual">Virtual</option>
-              <option value="In-Person">In-Person</option>
-              <option value="Hybrid">Hybrid</option>
-            </select>
+              placeholder="e.g., Career Fair, Job Interview, Networking Event"
+            />
           </div>
 
           <div>
@@ -326,25 +460,7 @@ const CreateEvent = ({ events, setEvents }) => {
               />
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px' }}>Remuneration (USD)*</label>
-              <input
-                type="number"
-                name="remuneration"
-                value={formData.remuneration}
-                onChange={handleChange}
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  border: `1px solid ${COLORS.border}`,
-                  borderRadius: '8px'
-                }}
-                min="0"
-                step="100"
-                required
-                placeholder="e.g., 1000"
-              />
-            </div>
+
           </div>
 
           <div>
@@ -367,7 +483,7 @@ const CreateEvent = ({ events, setEvents }) => {
           <div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>
             <button
               type="button"
-              onClick={() => navigate('..')}
+              onClick={onCancel}
               style={{
                 padding: '12px 24px',
                 background: 'transparent',

@@ -15,8 +15,6 @@ import FAQ from "./FAQ";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalType, setModalType] = useState("login");
   const [user, setUser] = useState(null);
 
   // Section states
@@ -40,16 +38,14 @@ export default function HomePage() {
   const handleFindJobs = () => {
     if (user) navigate("/jobs");
     else {
-      setModalType("signup");
-      setModalOpen(true);
+      navigate('/auth?mode=signup');
     }
   };
 
   const handlePostJob = () => {
     if (user) navigate("/post-job");
     else {
-      setModalType("login");
-      setModalOpen(true);
+      navigate('/auth?mode=login');
     }
   };
 
@@ -89,7 +85,7 @@ export default function HomePage() {
 
         <div className="flex space-x-4 items-center">
           <motion.button
-            onClick={() => { setModalType("signup"); setModalOpen(true); }}
+            onClick={() => navigate('/auth?mode=signup')}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
             className="bg-gradient-to-r from-[#8CC1FF] to-[#1A73E8] px-5 py-2 rounded-lg font-medium transition-all duration-500 hover:from-[#1A73E8] hover:to-[#0047B3] shadow-md"
@@ -99,7 +95,7 @@ export default function HomePage() {
 
           {!user ? (
             <motion.button
-              onClick={() => { setModalType("login"); setModalOpen(true); }}
+              onClick={() => navigate('/auth?mode=login')}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
               className="border border-white px-5 py-2 rounded-lg font-medium transition-all duration-500 bg-gradient-to-r from-[#1A73E8] to-[#0047B3] text-white hover:from-[#8CC1FF] hover:to-[#1A73E8]"
