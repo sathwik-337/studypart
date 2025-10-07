@@ -1296,15 +1296,19 @@ const StudentDashboard = () => {
     }}>
       {/* Sidebar Navigation */}
       <div style={{
-        width: '250px',
-        background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
-        color: 'white',
+        width: '280px',
+        background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+        boxShadow: '2px 0 12px rgba(0,0,0,0.1)',
+        borderRadius: '0 20px 20px 0',
         display: 'flex',
         flexDirection: 'column'
       }}>
         <div style={{
-          padding: '2rem 1.5rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+          padding: '24px',
+          borderBottom: '1px solid #E3E7EB',
+          background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
+          color: '#FFFFFF',
+          borderRadius: '0 20px 0 0'
         }}>
           <h1 style={{
             color: 'white',
@@ -1313,110 +1317,96 @@ const StudentDashboard = () => {
             margin: '0'
           }}>{studentData.name}</h1>
           <p style={{
-            color: 'rgba(255, 255, 255, 0.8)',
+            color: 'rgba(255, 255, 255, 0.9)',
             fontSize: '0.875rem',
-            margin: '0.5rem 0 0'
+            margin: '0.5rem 0 0',
+            opacity: '0.9'
           }}>Student Dashboard</p>
         </div>
         
-        <nav style={{ flex: 1, padding: '1rem 0' }}>
+        <nav style={{ marginTop: '16px' }}>
           <button 
             style={{
-              display: 'block',
               width: '100%',
-              padding: '1rem 1.5rem',
-              background: activeTab === 'dashboard' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: 'white',
-              border: 'none',
               textAlign: 'left',
-              fontSize: '1rem',
+              padding: '16px 24px',
+              background: activeTab === 'dashboard' ? 'linear-gradient(135deg, #3CB371 0%, #008080 100%)' : 'transparent',
+              color: activeTab === 'dashboard' ? '#FFFFFF' : '#1B263B',
+              border: 'none',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderLeft: activeTab === 'dashboard' ? '4px solid white' : '4px solid transparent'
+              transition: 'all 0.3s ease',
+              fontSize: '1rem',
+              fontWeight: activeTab === 'dashboard' ? '600' : '400'
             }}
             onClick={() => handleTabChange('dashboard')}
-            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-            onMouseLeave={(e) => e.target.style.background = activeTab === 'dashboard' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
             Dashboard Overview
           </button>
           <button 
             style={{
-              display: 'block',
               width: '100%',
-              padding: '1rem 1.5rem',
-              background: activeTab === 'jobs' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: 'white',
-              border: 'none',
               textAlign: 'left',
-              fontSize: '1rem',
+              padding: '16px 24px',
+              background: activeTab === 'jobs' ? 'linear-gradient(135deg, #3CB371 0%, #008080 100%)' : 'transparent',
+              color: activeTab === 'jobs' ? '#FFFFFF' : '#1B263B',
+              border: 'none',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderLeft: activeTab === 'jobs' ? '4px solid white' : '4px solid transparent'
+              transition: 'all 0.3s ease',
+              fontSize: '1rem',
+              fontWeight: activeTab === 'jobs' ? '600' : '400'
             }}
             onClick={() => handleTabChange('jobs')}
-            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-            onMouseLeave={(e) => e.target.style.background = activeTab === 'jobs' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
             Browse Jobs
           </button>
           <button 
             style={{
-              display: 'block',
               width: '100%',
-              padding: '1rem 1.5rem',
-              background: activeTab === 'events' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: 'white',
-              border: 'none',
               textAlign: 'left',
-              fontSize: '1rem',
+              padding: '16px 24px',
+              background: activeTab === 'events' ? 'linear-gradient(135deg, #3CB371 0%, #008080 100%)' : 'transparent',
+              color: activeTab === 'events' ? '#FFFFFF' : '#1B263B',
+              border: 'none',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderLeft: activeTab === 'events' ? '4px solid white' : '4px solid transparent'
+              transition: 'all 0.3s ease',
+              fontSize: '1rem',
+              fontWeight: activeTab === 'events' ? '600' : '400'
             }}
             onClick={() => handleTabChange('events')}
-            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-            onMouseLeave={(e) => e.target.style.background = activeTab === 'events' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
             Browse Events
           </button>
           <button 
             style={{
-              display: 'block',
               width: '100%',
-              padding: '1rem 1.5rem',
-              background: activeTab === 'applications' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: 'white',
-              border: 'none',
               textAlign: 'left',
-              fontSize: '1rem',
+              padding: '16px 24px',
+              background: activeTab === 'applications' ? 'linear-gradient(135deg, #3CB371 0%, #008080 100%)' : 'transparent',
+              color: activeTab === 'applications' ? '#FFFFFF' : '#1B263B',
+              border: 'none',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderLeft: activeTab === 'applications' ? '4px solid white' : '4px solid transparent'
+              transition: 'all 0.3s ease',
+              fontSize: '1rem',
+              fontWeight: activeTab === 'applications' ? '600' : '400'
             }}
             onClick={() => handleTabChange('applications')}
-            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-            onMouseLeave={(e) => e.target.style.background = activeTab === 'applications' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
             My Applications
           </button>
           <button 
             style={{
-              display: 'block',
               width: '100%',
-              padding: '1rem 1.5rem',
-              background: activeTab === 'analytics' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              color: 'white',
-              border: 'none',
               textAlign: 'left',
-              fontSize: '1rem',
+              padding: '16px 24px',
+              background: activeTab === 'analytics' ? 'linear-gradient(135deg, #3CB371 0%, #008080 100%)' : 'transparent',
+              color: activeTab === 'analytics' ? '#FFFFFF' : '#1B263B',
+              border: 'none',
               cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              borderLeft: activeTab === 'analytics' ? '4px solid white' : '4px solid transparent'
+              transition: 'all 0.3s ease',
+              fontSize: '1rem',
+              fontWeight: activeTab === 'analytics' ? '600' : '400'
             }}
             onClick={() => handleTabChange('analytics')}
-            onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-            onMouseLeave={(e) => e.target.style.background = activeTab === 'analytics' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
             My Progress
           </button>
@@ -1424,21 +1414,35 @@ const StudentDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div style={{
-        flex: 1,
-        padding: '2rem',
-        background: '#F4F6FB',
-        overflow: 'auto'
-      }}>
-        {/* Dashboard Tab */}
-        {activeTab === 'dashboard' && (
-          <div>
+      <div style={{ flex: 1, overflow: 'auto' }}>
+        <header style={{
+          background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+          padding: '20px 32px',
+          marginBottom: '24px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h1 style={{
-              fontSize: '2rem',
+              fontSize: '1.75rem',
               fontWeight: '600',
-              color: '#1B263B',
-              marginBottom: '2rem'
-            }}>Dashboard Overview</h1>
+              color: '#1B263B'
+            }}>
+              {activeTab === 'dashboard' ? 'Dashboard Overview' :
+               activeTab === 'jobs' ? 'Browse Jobs' :
+               activeTab === 'events' ? 'Browse Events' :
+               activeTab === 'applications' ? 'My Applications' :
+               activeTab === 'analytics' ? 'My Progress' : 'Dashboard'}
+            </h1>
+          </div>
+        </header>
+        
+        <div style={{
+          padding: '0 32px',
+          background: '#F4F6FB'
+        }}>
+          {/* Dashboard Tab */}
+          {activeTab === 'dashboard' && (
+            <div>
             
             {/* Stats Cards */}
             <div style={{
@@ -1929,6 +1933,7 @@ const StudentDashboard = () => {
             )}
           </div>
         )}
+        </div>
       </div>
 
       {/* Modal for Applications */}
