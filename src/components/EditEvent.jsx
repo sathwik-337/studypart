@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-const EditEvent = ({ events, setEvents }) => {
+const EditEvent = ({ events, setEvents, onCancel }) => {
   const navigate = useNavigate();
   const { eventId } = useParams();
   const [formData, setFormData] = useState({
@@ -38,6 +38,14 @@ const EditEvent = ({ events, setEvents }) => {
     );
     setEvents(updatedEvents);
     navigate('/owner/events');
+  };
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    } else {
+      navigate('/owner/events');
+    }
   };
 
   return (
@@ -210,7 +218,7 @@ const EditEvent = ({ events, setEvents }) => {
           <div style={{ display: 'flex', gap: '16px', marginTop: '16px' }}>
             <button
               type="button"
-              onClick={onCancel}
+              onClick={handleCancel}
               style={{
                 padding: '12px 24px',
                 background: 'transparent',

@@ -21,7 +21,7 @@ function Authform() {
   const [ownerName, setOwnerName] = useState('');
   const [companyName, setCompanyName] = useState('');
 
-  const API_BASE_URL = 'http://localhost:3001';
+  const API_BASE_URL = 'http://localhost:5000';
 
   const isValidAge = (dobStr) => {
     const today = new Date();
@@ -38,13 +38,27 @@ function Authform() {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/auth/login`, {
+      const res = await axios.post(`${API_BASE_URL}/api/v1/auth/login`, {
         email,
         password,
-        userType,
       });
       alert('Login successful!');
       console.log(res.data);
+      
+      // Store token and redirect based on role
+      if (res.data.tokens && res.data.tokens.accessToken) {
+        localStorage.setItem('accessToken', res.data.tokens.accessToken);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
+        
+        // Redirect based on user role
+        if (res.data.user.role === 'student') {
+          window.location.href = '/student/dashboard';
+        } else if (res.data.user.role === 'owner') {
+          window.location.href = '/owner/dashboard';
+        } else if (res.data.user.role === 'admin') {
+          window.location.href = '/admin/dashboard';
+        }
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed');
     }
@@ -65,24 +79,40 @@ function Authform() {
     }
 
     const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
     formData.append('firstName', firstName);
     formData.append('lastName', lastName);
     formData.append('currentAddress', currentAddress);
     formData.append('permanentAddress', permanentAddress);
-    formData.append('dob', dob);
+    formData.append('dateOfBirth', dob);
     formData.append('collegeName', collegeName);
     formData.append('collegeAddress', collegeAddress);
     formData.append('collegeIdPdf', collegeIdPdf);
 
     setLoading(true);
     try {
-      const res = await axios.post(`${API_BASE_URL}/api/auth/signup/student`, formData, {
+      const res = await axios.post(`${API_BASE_URL}/api/v1/student-registration/request`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      alert('Student signup successful!');
+      alert('Registration request submitted successfully! Please wait for admin approval. You will receive an email notification once your request is reviewed.');
       console.log(res.data);
+      
+      // Reset form
+      setEmail('');
+      setPassword('');
+      setFirstName('');
+      setLastName('');
+      setCurrentAddress('');
+      setPermanentAddress('');
+      setDob('');
+      setCollegeName('');
+      setCollegeAddress('');
+      setCollegeIdPdf(null);
+      setMode('login');
+      
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed');
+      setError(err.response?.data?.message || 'Registration failed');
     }
     setLoading(false);
   };
