@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import EditEvent from './EditEvent';
+import ViewEventDetails from './ViewEventDetails';
 
 const COLORS = {
   white: "#FFFFFF",
@@ -16,19 +18,8 @@ const COLORS = {
 };
 
 const EventManagement = () => {
-  return (
-    <div style={{ padding: '24px' }}>
-      <Routes>
-        <Route path="/" element={<EventList />} />
-        <Route path="/create" element={<CreateEvent />} />
-      </Routes>
-    </div>
-  );
-};
-
-const EventList = () => {
   const navigate = useNavigate();
-  const [events] = useState([
+  const [events, setEvents] = useState([
     {
       id: 1,
       title: 'Tech Talk Series',
@@ -54,6 +45,21 @@ const EventList = () => {
       description: 'Annual career fair with leading tech companies...'
     }
   ]);
+
+  return (
+    <div style={{ padding: '24px' }}>
+      <Routes>
+        <Route path="/" element={<EventList events={events} setEvents={setEvents} />} />
+        <Route path="/create" element={<CreateEvent events={events} setEvents={setEvents} />} />
+        <Route path="/edit/:eventId" element={<EditEvent events={events} setEvents={setEvents} />} />
+        <Route path="/view/:eventId" element={<ViewEventDetails events={events} onBack={() => navigate('/owner/events')} />} />
+      </Routes>
+    </div>
+  );
+};
+
+const EventList = ({ events, setEvents }) => {
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -131,10 +137,12 @@ const EventList = () => {
                     borderRadius: '6px',
                     cursor: 'pointer'
                   }}
+                  onClick={() => navigate(`edit/${event.id}`)}
                 >
                   Edit
                 </button>
                 <button
+                  onClick={() => navigate(`view/${event.id}`)}
                   style={{
                     padding: '8px 16px',
                     background: COLORS.teal.gradient,
@@ -155,7 +163,7 @@ const EventList = () => {
   );
 };
 
-const CreateEvent = () => {
+const CreateEvent = ({ events, setEvents }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
@@ -171,8 +179,12 @@ const CreateEvent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement event creation logic
-    navigate('..');
+    const newEvent = {
+      ...formData,
+      id: events.length > 0 ? Math.max(...events.map(e => e.id)) + 1 : 1
+    };
+    setEvents([...events, newEvent]);
+    navigate('/owner/events');
   };
 
   const handleChange = (e) => {

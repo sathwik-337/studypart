@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import CreateJobPost from '../components/CreateJobPost';
+import EditJobPost from '../components/EditJobPost';
 
 const JobManagement = () => {
   const navigate = useNavigate();
+  const [selectedJob, setSelectedJob] = useState(null);
   const [jobs, setJobs] = useState([
     {
       id: 1,
@@ -37,6 +39,21 @@ const JobManagement = () => {
     };
     setJobs([...jobs, newJob]);
     navigate('/owner-dashboard/jobs');
+  };
+
+  const handleEditJob = (jobData) => {
+    const updatedJobs = jobs.map(job => 
+      job.id === jobData.id ? { ...jobData, postedDate: job.postedDate } : job
+    );
+    setJobs(updatedJobs);
+    navigate('/owner-dashboard/jobs');
+  };
+
+  const handleDeleteJob = (jobId) => {
+    if (window.confirm('Are you sure you want to delete this job posting?')) {
+      const updatedJobs = jobs.filter(job => job.id !== jobId);
+      setJobs(updatedJobs);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -109,13 +126,13 @@ const JobManagement = () => {
                     <span className="text-sm text-gray-500">Posted on {job.postedDate}</span>
                     <div className="flex gap-2">
                       <button
-                        onClick={() => {/* TODO: Implement edit functionality */}}
+                        onClick={() => navigate(`edit/${job.id}`)}
                         className="px-4 py-2 text-sm border border-teal-600 text-teal-600 rounded hover:bg-teal-50 focus:outline-none focus:ring-2 focus:ring-teal-500"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => {/* TODO: Implement delete functionality */}}
+                        onClick={() => handleDeleteJob(job.id)}
                         className="px-4 py-2 text-sm border border-red-600 text-red-600 rounded hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500"
                       >
                         Delete
@@ -133,6 +150,16 @@ const JobManagement = () => {
         element={
           <CreateJobPost
             onSubmit={handleCreateJob}
+            onCancel={() => navigate('/owner-dashboard/jobs')}
+          />
+        }
+      />
+      <Route
+        path="edit/:jobId"
+        element={
+          <EditJobPost
+            jobs={jobs}
+            onSubmit={handleEditJob}
             onCancel={() => navigate('/owner-dashboard/jobs')}
           />
         }
