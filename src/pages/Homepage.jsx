@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import AuthForm from "../pages/Authform";
 import { auth } from "../firebase";
+import logo from "../Assets/logo4.png";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -10,7 +11,6 @@ export default function HomePage() {
   const [modalType, setModalType] = useState("login");
   const [user, setUser] = useState(null);
 
-  // Listen for Firebase auth state changes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       setUser(currentUser);
@@ -27,7 +27,7 @@ export default function HomePage() {
   };
 
   const handlePostJob = () => {
-    if (user) navigate("/post-job"); // or employer dashboard
+    if (user) navigate("/post-job");
     else {
       setModalType("login");
       setModalOpen(true);
@@ -35,15 +35,18 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-blue-100 text-gray-800">
-      {/* Navbar */}
-      <nav className="flex justify-between items-center px-8 py-4 bg-white shadow-md">
-        <h1 className="text-2xl font-bold text-blue-600">StudyApart</h1>
+    <div className="min-h-screen flex flex-col bg-[#FFFFFF] text-[#1B263B]">
+      <nav className="flex justify-between items-center px-8 py-4 bg-gradient-to-r from-[#3CB371] to-[#008080] shadow-md text-white">
+        <div className="flex flex-col items-center space-x-2">
+          <img
+            src={logo}
+            alt="StudyApart Logo"
+            className="w-20 h-20"
+          />
+          <h1 className="text-xl font-bold mt-1 text-black">Study-A-Part</h1>
+        </div>
         <div className="space-x-4">
-          <button
-            onClick={handleFindJobs}
-            className="text-gray-600 hover:text-blue-600"
-          >
+          <button onClick={handleFindJobs} className="hover:underline">
             Browse Jobs
           </button>
           {!user ? (
@@ -52,14 +55,14 @@ export default function HomePage() {
                 setModalType("login");
                 setModalOpen(true);
               }}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              className="bg-[#1A73E8] px-4 py-2 rounded-lg hover:bg-[#1558B0] transition text-white"
             >
               Login
             </button>
           ) : (
             <button
               onClick={() => auth.signOut()}
-              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+              className="bg-[#27AE60] px-4 py-2 rounded-lg hover:bg-[#50C878] transition text-white"
             >
               Logout
             </button>
@@ -67,16 +70,15 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="flex flex-col md:flex-row justify-between items-center px-10 py-16 md:py-24">
+      <section className="flex flex-col md:flex-row justify-between items-center px-10 py-16 md:py-24 bg-gradient-to-br from-[#F4F6FB] to-[#F2F6F8]">
         <motion.div
           initial={{ opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           className="md:w-1/2 mb-10 md:mb-0"
         >
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-            Find Your Perfect <span className="text-blue-600">Part-Time Job</span> While You Study 🎓
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4 text-[#1B263B]">
+            Find Your Perfect <span className="text-[#008080]">Part-Time Job</span> While You Study 🎓
           </h1>
           <p className="text-lg text-gray-700 mb-8">
             Discover flexible opportunities near your campus or online. Earn, learn, and grow your career with verified employers.
@@ -84,33 +86,25 @@ export default function HomePage() {
           <div className="space-x-4">
             <button
               onClick={handleFindJobs}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+              className="bg-[#1A73E8] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#1558B0] transition"
             >
               Find Jobs
             </button>
             <button
               onClick={handlePostJob}
-              className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-blue-600 hover:text-white transition"
+              className="border border-[#3CB371] text-[#3CB371] px-6 py-3 rounded-lg font-medium hover:bg-[#3CB371] hover:text-white transition"
             >
               Post a Job
             </button>
           </div>
         </motion.div>
 
-        <motion.img
-          initial={{ opacity: 0, x: 60 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          src="https://illustrations.popsy.co/blue/student-reading.svg"
-          alt="Student illustration"
-          className="w-80 md:w-[420px]"
-        />
+        {/* Hero image removed as requested */}
       </section>
 
-      {/* Features Section */}
-      <section className="bg-white py-16 px-8 md:px-16">
+      <section className="bg-[#FFFFFF] py-16 px-8 md:px-16">
         <h2 className="text-3xl font-bold text-center mb-10">
-          Why Choose <span className="text-blue-600">CampusWorks?</span>
+          Why Choose <span className="text-[#008080]">CampusWorks?</span>
         </h2>
         <div className="grid md:grid-cols-3 gap-8 text-center">
           {[
@@ -118,17 +112,16 @@ export default function HomePage() {
             { title: "Flexible Hours", desc: "Find part-time work that fits your college schedule.", icon: "⏰" },
             { title: "Skill Growth", desc: "Work experiences that boost your resume and confidence.", icon: "🚀" },
           ].map((item, i) => (
-            <motion.div key={i} whileHover={{ scale: 1.05 }} className="bg-blue-50 p-6 rounded-2xl shadow-sm">
+            <motion.div key={i} whileHover={{ scale: 1.05 }} className="bg-[#F4F6FB] p-6 rounded-2xl shadow-sm border border-[#F2F6F8]">
               <div className="text-4xl mb-3">{item.icon}</div>
-              <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+              <h3 className="text-xl font-semibold mb-2 text-[#1B263B]">{item.title}</h3>
               <p className="text-gray-600">{item.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-center">
+      <section className="py-16 bg-gradient-to-r from-[#3CB371] to-[#008080] text-white text-center">
         <h2 className="text-3xl font-bold mb-8">Trusted by Students Across India 🇮🇳</h2>
         <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
           <div>
@@ -146,16 +139,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white text-center py-6 text-gray-600 border-t">
+      <footer className="bg-[#FFFFFF] text-center py-6 text-[#1B263B] border-t border-[#F2F6F8]">
         © {new Date().getFullYear()} CampusWorks. All Rights Reserved.
       </footer>
 
-      {/* Login / Signup Modal */}
       {modalOpen && (
         <AuthForm
           type={modalType}
-          onSuccess={() => setModalOpen(false)} // close modal after login/signup
+          onSuccess={() => setModalOpen(false)}
         />
       )}
     </div>
