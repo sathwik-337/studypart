@@ -1291,13 +1291,13 @@ const StudentDashboard = () => {
     <div style={{
       display: 'flex',
       minHeight: '100vh',
-      background: '#f8f9fa',
+      background: '#F4F6FB',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
     }}>
       {/* Sidebar Navigation */}
       <div style={{
         width: '250px',
-        background: '#4CAF50',
+        background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
         color: 'white',
         display: 'flex',
         flexDirection: 'column'
@@ -1358,7 +1358,7 @@ const StudentDashboard = () => {
             onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
             onMouseLeave={(e) => e.target.style.background = activeTab === 'jobs' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            Job Management
+            Browse Jobs
           </button>
           <button 
             style={{
@@ -1378,7 +1378,7 @@ const StudentDashboard = () => {
             onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
             onMouseLeave={(e) => e.target.style.background = activeTab === 'events' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            Event Management
+            Browse Events
           </button>
           <button 
             style={{
@@ -1398,7 +1398,7 @@ const StudentDashboard = () => {
             onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
             onMouseLeave={(e) => e.target.style.background = activeTab === 'applications' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            Applications
+            My Applications
           </button>
           <button 
             style={{
@@ -1418,7 +1418,7 @@ const StudentDashboard = () => {
             onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
             onMouseLeave={(e) => e.target.style.background = activeTab === 'analytics' ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
-            Analytics
+            My Progress
           </button>
         </nav>
       </div>
@@ -1427,7 +1427,7 @@ const StudentDashboard = () => {
       <div style={{
         flex: 1,
         padding: '2rem',
-        background: '#f8f9fa',
+        background: '#F4F6FB',
         overflow: 'auto'
       }}>
         {/* Dashboard Tab */}
@@ -1436,7 +1436,7 @@ const StudentDashboard = () => {
             <h1 style={{
               fontSize: '2rem',
               fontWeight: '600',
-              color: '#333',
+              color: '#1B263B',
               marginBottom: '2rem'
             }}>Dashboard Overview</h1>
             
@@ -1448,82 +1448,130 @@ const StudentDashboard = () => {
               marginBottom: '2rem'
             }}>
               <div style={{
-                background: 'white',
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
                 padding: '1.5rem',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                borderTop: '4px solid #4CAF50'
+                borderRadius: '24px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
+                position: 'relative',
+                overflow: 'hidden'
               }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)'
+                }}></div>
                 <h3 style={{
                   fontSize: '0.875rem',
                   fontWeight: '500',
-                  color: '#666',
-                  margin: '0 0 0.5rem'
-                }}>Active Job Postings</h3>
+                  color: '#4A5A6A',
+                  margin: '0 0 0.5rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.8px'
+                }}>Available Jobs</h3>
                 <div style={{
                   fontSize: '2rem',
-                  fontWeight: '700',
-                  color: '#4CAF50'
+                  fontWeight: '800',
+                  color: '#1B263B'
                 }}>{mockJobs.length}</div>
               </div>
               
               <div style={{
-                background: 'white',
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
                 padding: '1.5rem',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                borderTop: '4px solid #2196F3'
+                borderRadius: '24px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
+                position: 'relative',
+                overflow: 'hidden'
               }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(135deg, #1A73E8 0%, #1558B0 100%)'
+                }}></div>
                 <h3 style={{
                   fontSize: '0.875rem',
                   fontWeight: '500',
-                  color: '#666',
-                  margin: '0 0 0.5rem'
+                  color: '#4A5A6A',
+                  margin: '0 0 0.5rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.8px'
                 }}>Total Applications</h3>
                 <div style={{
                   fontSize: '2rem',
-                  fontWeight: '700',
-                  color: '#2196F3'
+                  fontWeight: '800',
+                  color: '#1B263B'
                 }}>{stats.totalApplications}</div>
               </div>
               
               <div style={{
-                background: 'white',
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
                 padding: '1.5rem',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                borderTop: '4px solid #4CAF50'
+                borderRadius: '24px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
+                position: 'relative',
+                overflow: 'hidden'
               }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(135deg, #50C878 0%, #27AE60 100%)'
+                }}></div>
                 <h3 style={{
                   fontSize: '0.875rem',
                   fontWeight: '500',
-                  color: '#666',
-                  margin: '0 0 0.5rem'
+                  color: '#4A5A6A',
+                  margin: '0 0 0.5rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.8px'
                 }}>Upcoming Events</h3>
                 <div style={{
                   fontSize: '2rem',
-                  fontWeight: '700',
-                  color: '#4CAF50'
+                  fontWeight: '800',
+                  color: '#1B263B'
                 }}>{mockEvents.length}</div>
               </div>
               
               <div style={{
-                background: 'white',
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
                 padding: '1.5rem',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                borderTop: '4px solid #FF9800'
+                borderRadius: '24px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
+                position: 'relative',
+                overflow: 'hidden'
               }}>
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: 'linear-gradient(135deg, #1A73E8 0%, #1558B0 100%)'
+                }}></div>
                 <h3 style={{
                   fontSize: '0.875rem',
                   fontWeight: '500',
-                  color: '#666',
-                  margin: '0 0 0.5rem'
-                }}>Success Rate</h3>
+                  color: '#4A5A6A',
+                  margin: '0 0 0.5rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.8px'
+                }}>Conversion Rate</h3>
                 <div style={{
                   fontSize: '2rem',
-                  fontWeight: '700',
-                  color: '#FF9800'
+                  fontWeight: '800',
+                  color: '#1B263B'
                 }}>{stats.totalApplications > 0 ? Math.round((stats.acceptedApplications / stats.totalApplications) * 100) : 0}%</div>
               </div>
             </div>
@@ -1533,7 +1581,7 @@ const StudentDashboard = () => {
               <h2 style={{
                 fontSize: '1.5rem',
                 fontWeight: '600',
-                color: '#333',
+                color: '#1B263B',
                 marginBottom: '1rem'
               }}>Quick Actions</h2>
               <div style={{
@@ -1544,74 +1592,114 @@ const StudentDashboard = () => {
                 <button 
                   onClick={() => handleTabChange('jobs')}
                   style={{
-                    background: '#4CAF50',
+                    background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
                     color: 'white',
                     border: 'none',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '6px',
+                    padding: '1rem 2rem',
+                    borderRadius: '16px',
                     fontSize: '0.875rem',
-                    fontWeight: '500',
+                    fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 4px 16px rgba(60, 179, 113, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
-                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #008080 0%, #006666 100%)';
+                    e.target.style.transform = 'translateY(-4px)';
+                    e.target.style.boxShadow = '0 8px 24px rgba(60, 179, 113, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #3CB371 0%, #008080 100%)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(60, 179, 113, 0.3)';
+                  }}
                 >
-                  Browse New Jobs
+                  Browse Jobs
                 </button>
                 <button 
                   onClick={() => handleTabChange('events')}
                   style={{
-                    background: '#4CAF50',
+                    background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
                     color: 'white',
                     border: 'none',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '6px',
+                    padding: '1rem 2rem',
+                    borderRadius: '16px',
                     fontSize: '0.875rem',
-                    fontWeight: '500',
+                    fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 4px 16px rgba(60, 179, 113, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
-                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #008080 0%, #006666 100%)';
+                    e.target.style.transform = 'translateY(-4px)';
+                    e.target.style.boxShadow = '0 8px 24px rgba(60, 179, 113, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #3CB371 0%, #008080 100%)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(60, 179, 113, 0.3)';
+                  }}
                 >
-                  Schedule Event
+                  Browse Events
                 </button>
                 <button 
                   onClick={() => handleTabChange('applications')}
                   style={{
-                    background: '#4CAF50',
+                    background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
                     color: 'white',
                     border: 'none',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '6px',
+                    padding: '1rem 2rem',
+                    borderRadius: '16px',
                     fontSize: '0.875rem',
-                    fontWeight: '500',
+                    fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 4px 16px rgba(60, 179, 113, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
-                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #008080 0%, #006666 100%)';
+                    e.target.style.transform = 'translateY(-4px)';
+                    e.target.style.boxShadow = '0 8px 24px rgba(60, 179, 113, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #3CB371 0%, #008080 100%)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(60, 179, 113, 0.3)';
+                  }}
                 >
-                  Review Applications
+                  My Applications
                 </button>
                 <button 
                   onClick={() => handleTabChange('analytics')}
                   style={{
-                    background: '#4CAF50',
+                    background: 'linear-gradient(135deg, #3CB371 0%, #008080 100%)',
                     color: 'white',
                     border: 'none',
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: '6px',
+                    padding: '1rem 2rem',
+                    borderRadius: '16px',
                     fontSize: '0.875rem',
-                    fontWeight: '500',
+                    fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: '0 4px 16px rgba(60, 179, 113, 0.3)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
                   }}
-                  onMouseEnter={(e) => e.target.style.background = '#45a049'}
-                  onMouseLeave={(e) => e.target.style.background = '#4CAF50'}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #008080 0%, #006666 100%)';
+                    e.target.style.transform = 'translateY(-4px)';
+                    e.target.style.boxShadow = '0 8px 24px rgba(60, 179, 113, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, #3CB371 0%, #008080 100%)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(60, 179, 113, 0.3)';
+                  }}
                 >
-                  View Analytics
+                  My Progress
                 </button>
               </div>
             </div>
@@ -1621,13 +1709,14 @@ const StudentDashboard = () => {
               <h2 style={{
                 fontSize: '1.5rem',
                 fontWeight: '600',
-                color: '#333',
+                color: '#1B263B',
                 marginBottom: '1rem'
               }}>Recent Activity</h2>
               <div style={{
-                background: 'white',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
+                borderRadius: '24px',
+                boxShadow: '0 8px 32px rgba(27, 38, 59, 0.08)',
+                border: '1px solid rgba(244, 246, 251, 0.8)',
                 overflow: 'hidden'
               }}>
                 {applications.slice(0, 3).map((app, index) => (
@@ -1639,20 +1728,21 @@ const StudentDashboard = () => {
                     alignItems: 'center'
                   }}>
                     <div>
-                      <p style={{ margin: '0 0 0.25rem', fontWeight: '500', color: '#333' }}>
-                        New application received for {app.jobTitle} position
+                      <p style={{ margin: '0 0 0.25rem', fontWeight: '500', color: '#1B263B' }}>
+                        Applied for {app.jobTitle} position
                       </p>
-                      <p style={{ margin: '0', fontSize: '0.875rem', color: '#666' }}>
+                      <p style={{ margin: '0', fontSize: '0.875rem', color: '#4A5A6A' }}>
                         Applied on {new Date(app.appliedDate).toLocaleDateString()}
                       </p>
                     </div>
                     <button style={{
                       background: 'none',
                       border: 'none',
-                      color: '#2196F3',
+                      color: '#1A73E8',
                       fontSize: '0.875rem',
                       cursor: 'pointer',
-                      textDecoration: 'underline'
+                      textDecoration: 'underline',
+                      fontWeight: '500'
                     }}>
                       View Details
                     </button>
@@ -1671,7 +1761,7 @@ const StudentDashboard = () => {
               fontWeight: '600',
               color: '#333',
               marginBottom: '2rem'
-            }}>Job Management</h1>
+            }}>Browse Jobs</h1>
             
             <div style={{
               display: 'flex',
