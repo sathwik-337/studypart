@@ -1138,20 +1138,27 @@ const styles = `
 const useLocalStorage = (key, initialValue) => {
   const [storedValue, setStoredValue] = useState(() => {
     try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const item = window.localStorage.getItem(key);
+        return item ? JSON.parse(item) : initialValue;
+      }
+      return initialValue;
     } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
       return initialValue;
     }
   });
 
   const setValue = (value) => {
     try {
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        console.log(`✅ Saved to localStorage: ${key} = ${valueToStore}`);
+      }
     } catch (error) {
-      console.error('Error saving to localStorage:', error);
+      console.error(`Error saving to localStorage key "${key}":`, error);
     }
   };
 
@@ -1207,6 +1214,15 @@ const StudentDashboard = () => {
     avatar: "/api/placeholder/50/50",
     id: ""
   });
+
+  // Debug effect to track tab changes and persistence
+  useEffect(() => {
+    console.log(`📊 Student Dashboard loaded with activeTab: ${activeTab}`);
+  }, []);
+
+  useEffect(() => {
+    console.log(`📝 Active tab changed to: ${activeTab}`);
+  }, [activeTab]);
 
   // Mock API data
   const mockJobs = [
@@ -1523,6 +1539,7 @@ const StudentDashboard = () => {
 
   // Handler functions
   const handleTabChange = (tab) => {
+    console.log(`🔄 Switching to tab: ${tab}`);
     setActiveTab(tab);
   };
 

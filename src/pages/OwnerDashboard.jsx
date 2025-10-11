@@ -6,6 +6,37 @@ import ApplicationReview from '../components/ApplicationReview';
 import Analytics from '../components/Analytics';
 import API_BASE_URL from '../config/api';
 
+// Custom hook for localStorage persistence
+const useLocalStorage = (key, initialValue) => {
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const item = window.localStorage.getItem(key);
+        return item ? JSON.parse(item) : initialValue;
+      }
+      return initialValue;
+    } catch (error) {
+      console.error(`Error reading localStorage key "${key}":`, error);
+      return initialValue;
+    }
+  });
+
+  const setValue = (value) => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        setStoredValue(valueToStore);
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+        console.log(`✅ Saved to localStorage: ${key} = ${valueToStore}`);
+      }
+    } catch (error) {
+      console.error(`Error saving to localStorage key "${key}":`, error);
+    }
+  };
+
+  return [storedValue, setValue];
+};
+
 // Homepage color palette with gradients
 const COLORS = {
   white: "#FFFFFF",
@@ -39,6 +70,37 @@ const COLORS = {
 
 // Main Dashboard Component
 const OwnerDashboard = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [lastPath, setLastPath] = useLocalStorage('ownerDashboardPath', 'overview');
+
+  // Debug effect to track path changes and persistence
+  useEffect(() => {
+    console.log(`📊 Owner Dashboard loaded. Current path: ${location.pathname}, Last saved path: ${lastPath}`);
+  }, []);
+
+  // Get the last visited tab from localStorage on component mount
+  useEffect(() => {
+    const currentPathSegment = location.pathname.split('/').pop();
+    
+    // Only redirect if we're at the root path and have a saved path different from default
+    if ((location.pathname.endsWith('/owner') || currentPathSegment === 'owner') && lastPath && lastPath !== 'overview') {
+      console.log(`🔄 Redirecting to saved path: ${lastPath}`);
+      navigate(lastPath, { replace: true });
+    }
+  }, [navigate, location.pathname, lastPath]);
+
+  // Save current path to localStorage whenever location changes
+  useEffect(() => {
+    const pathSegments = location.pathname.split('/');
+    const currentPath = pathSegments[pathSegments.length - 1]; // Get the last segment
+    
+    if (currentPath && currentPath !== 'owner' && currentPath !== lastPath) {
+      console.log(`📝 Saving current path: ${currentPath}`);
+      setLastPath(currentPath);
+    }
+  }, [location.pathname, lastPath, setLastPath]);
+
   return (
     <DashboardLayout>
       <Routes>
@@ -136,42 +198,88 @@ const DashboardLayout = ({ children }) => {
         </div>
 
         {/* Navigation */}
-        <nav style={{ marginTop: '24px', padding: '0 16px' }}>
-          {menuItems.map((item) => (
+        <nav style={{ marginTop: '24px', padding: '0 16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1 }}>
+            {menuItems.map((item) => (
+              <button
+                key={item.path}
+                onClick={() => {
+                  console.log(`🔄 Navigating to: ${item.path}`);
+                  navigate(item.path);
+                }}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '16px 20px',
+                  margin: '4px 0',
+                  background: location.pathname.includes(item.path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                  color: COLORS.white,
+                  border: location.pathname.includes(item.path) ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  fontSize: '1rem',
+                  fontWeight: location.pathname.includes(item.path) ? '600' : '500',
+                  borderRadius: '12px',
+                  backdropFilter: location.pathname.includes(item.path) ? 'blur(10px)' : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (!location.pathname.includes(item.path)) {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!location.pathname.includes(item.path)) {
+                    e.target.style.background = 'transparent';
+                    e.target.style.borderColor = 'transparent';
+                  }
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          
+          {/* Logout Button */}
+          <div style={{ padding: '24px 0', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
             <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
+              onClick={() => {
+                console.log('🚪 Logging out and clearing saved path');
+                localStorage.removeItem('ownerDashboardPath');
+                localStorage.removeItem('token');
+                navigate('/login');
+              }}
               style={{
                 width: '100%',
-                textAlign: 'left',
+                textAlign: 'center',
                 padding: '16px 20px',
-                margin: '4px 0',
-                background: location.pathname.includes(item.path) ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                background: 'rgba(255, 255, 255, 0.1)',
                 color: COLORS.white,
-                border: location.pathname.includes(item.path) ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
                 cursor: 'pointer',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 fontSize: '1rem',
-                fontWeight: location.pathname.includes(item.path) ? '600' : '500',
+                fontWeight: '500',
                 borderRadius: '12px',
-                backdropFilter: location.pathname.includes(item.path) ? 'blur(10px)' : 'none'
+                backdropFilter: 'blur(10px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
               }}
               onMouseEnter={(e) => {
-                if (!location.pathname.includes(item.path)) {
-                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-                }
+                e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                e.target.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={(e) => {
-                if (!location.pathname.includes(item.path)) {
-                  e.target.style.background = 'transparent';
-                  e.target.style.borderColor = 'transparent';
-                }
+                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                e.target.style.transform = 'translateY(0)';
               }}
             >
-              {item.label}
+              <span style={{ fontSize: '1.2rem' }}>🚪</span>
+              Logout
             </button>
-          ))}
+          </div>
         </nav>
       </div>
 

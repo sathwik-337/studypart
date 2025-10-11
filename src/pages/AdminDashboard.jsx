@@ -34,7 +34,10 @@ const COLORS = {
 };
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  // Get initial tab from localStorage or default to 'dashboard'
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem('adminActiveTab') || 'dashboard';
+  });
   const [users, setUsers] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [jobs, setJobs] = useState([]);
@@ -42,11 +45,17 @@ const AdminDashboard = () => {
   const [systemStats, setSystemStats] = useState({});
   const [activityLog, setActivityLog] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Fetch real data from API
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // Update localStorage whenever activeTab changes
+  useEffect(() => {
+    localStorage.setItem('adminActiveTab', activeTab);
+  }, [activeTab]);
 
   const fetchDashboardData = async () => {
     try {
@@ -194,6 +203,10 @@ const AdminDashboard = () => {
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    // Save the active tab to localStorage
+    localStorage.setItem('adminActiveTab', tab);
+    // Close sidebar on mobile when tab changes
+    setSidebarOpen(false);
   };
 
   const handleUserAction = (userId, action) => {
@@ -233,101 +246,275 @@ const AdminDashboard = () => {
 
   const renderDashboardOverview = () => (
     <div>
-      <h1 style={{
-        fontSize: '2rem',
-        fontWeight: '600',
-        color: '#1B263B',
-        marginBottom: '2rem'
-      }}>Admin Dashboard Overview</h1>
 
       {/* System Stats Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '1.5rem',
-        marginBottom: '2rem'
+        gridTemplateColumns: window.innerWidth < 768 ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: window.innerWidth < 768 ? '16px' : '24px',
+        marginBottom: '40px'
       }}>
         {/* Users Stats */}
         <div style={{
-          background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
-          padding: '1.5rem',
-          borderRadius: '16px',
-          boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
-          border: '1px solid rgba(244, 246, 251, 0.8)'
-        }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Approved Students</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#059669' }}>{systemStats.approvedStudents || 0}</div>
-          <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
+          background: COLORS.cardBackground,
+          padding: '32px 24px',
+          borderRadius: '20px',
+          boxShadow: '0 10px 40px rgba(79, 142, 247, 0.1)',
+          border: `1px solid ${COLORS.border}`,
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          backdropFilter: 'blur(10px)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 20px 60px rgba(79, 142, 247, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 10px 40px rgba(79, 142, 247, 0.1)';
+        }}
+        >
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '4px',
+            background: COLORS.accent.gradient
+          }} />
+          <h3 style={{ 
+            fontSize: '1rem', 
+            color: COLORS.text, 
+            margin: '0 0 16px',
+            fontWeight: '600',
+            opacity: 0.8,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>Approved Students</h3>
+          <div style={{ 
+            fontSize: '3rem', 
+            fontWeight: '800', 
+            background: COLORS.accent.gradient,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.02em'
+          }}>{systemStats.approvedStudents || 0}</div>
+          <div style={{ fontSize: '0.875rem', color: COLORS.subText, marginTop: '8px', fontWeight: '500' }}>
             Active student accounts
           </div>
         </div>
 
         <div style={{
-          background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
-          padding: '1.5rem',
-          borderRadius: '16px',
-          boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
-          border: '1px solid rgba(244, 246, 251, 0.8)'
-        }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Pending Registrations</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#F59E0B' }}>{systemStats.pendingRegistrations || 0}</div>
-          <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
+          background: COLORS.cardBackground,
+          padding: '32px 24px',
+          borderRadius: '20px',
+          boxShadow: '0 10px 40px rgba(79, 142, 247, 0.1)',
+          border: `1px solid ${COLORS.border}`,
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          backdropFilter: 'blur(10px)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 20px 60px rgba(79, 142, 247, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 10px 40px rgba(79, 142, 247, 0.1)';
+        }}
+        >
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '4px',
+            background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)'
+          }} />
+          <h3 style={{ 
+            fontSize: '1rem', 
+            color: COLORS.text, 
+            margin: '0 0 16px',
+            fontWeight: '600',
+            opacity: 0.8,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>Pending Registrations</h3>
+          <div style={{ 
+            fontSize: '3rem', 
+            fontWeight: '800', 
+            background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.02em'
+          }}>{systemStats.pendingRegistrations || 0}</div>
+          <div style={{ fontSize: '0.875rem', color: COLORS.subText, marginTop: '8px', fontWeight: '500' }}>
             Awaiting approval
           </div>
         </div>
 
         <div style={{
-          background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
-          padding: '1.5rem',
-          borderRadius: '16px',
-          boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
-          border: '1px solid rgba(244, 246, 251, 0.8)'
-        }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Total Companies</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#7C3AED' }}>{systemStats.totalCompanies || 0}</div>
-          <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
+          background: COLORS.cardBackground,
+          padding: '32px 24px',
+          borderRadius: '20px',
+          boxShadow: '0 10px 40px rgba(79, 142, 247, 0.1)',
+          border: `1px solid ${COLORS.border}`,
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          backdropFilter: 'blur(10px)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 20px 60px rgba(79, 142, 247, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 10px 40px rgba(79, 142, 247, 0.1)';
+        }}
+        >
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '4px',
+            background: COLORS.primary.gradient
+          }} />
+          <h3 style={{ 
+            fontSize: '1rem', 
+            color: COLORS.text, 
+            margin: '0 0 16px',
+            fontWeight: '600',
+            opacity: 0.8,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>Total Companies</h3>
+          <div style={{ 
+            fontSize: '3rem', 
+            fontWeight: '800', 
+            background: COLORS.primary.gradient,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.02em'
+          }}>{systemStats.totalCompanies || 0}</div>
+          <div style={{ fontSize: '0.875rem', color: COLORS.subText, marginTop: '8px', fontWeight: '500' }}>
             Registered companies
           </div>
         </div>
 
         <div style={{
-          background: 'linear-gradient(145deg, #FFFFFF 0%, #F8FAFF 100%)',
-          padding: '1.5rem',
-          borderRadius: '16px',
-          boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
-          border: '1px solid rgba(244, 246, 251, 0.8)'
-        }}>
-          <h3 style={{ fontSize: '0.875rem', color: '#4A5A6A', margin: '0 0 0.5rem' }}>Total Applications</h3>
-          <div style={{ fontSize: '2rem', fontWeight: '700', color: '#059669' }}>{systemStats.totalApplications || 0}</div>
-          <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '0.5rem' }}>
+          background: COLORS.cardBackground,
+          padding: '32px 24px',
+          borderRadius: '20px',
+          boxShadow: '0 10px 40px rgba(79, 142, 247, 0.1)',
+          border: `1px solid ${COLORS.border}`,
+          position: 'relative',
+          overflow: 'hidden',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          backdropFilter: 'blur(10px)'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 20px 60px rgba(79, 142, 247, 0.15)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 10px 40px rgba(79, 142, 247, 0.1)';
+        }}
+        >
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '4px',
+            background: COLORS.accent.gradient
+          }} />
+          <h3 style={{ 
+            fontSize: '1rem', 
+            color: COLORS.text, 
+            margin: '0 0 16px',
+            fontWeight: '600',
+            opacity: 0.8,
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>Total Applications</h3>
+          <div style={{ 
+            fontSize: '3rem', 
+            fontWeight: '800', 
+            background: COLORS.accent.gradient,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            letterSpacing: '-0.02em'
+          }}>{systemStats.totalApplications || 0}</div>
+          <div style={{ fontSize: '0.875rem', color: COLORS.subText, marginTop: '8px', fontWeight: '500' }}>
             Job applications submitted
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#1B263B', marginBottom: '1rem' }}>
+      <div style={{ marginBottom: '40px' }}>
+        <h2 style={{ 
+          fontSize: '1.75rem', 
+          fontWeight: '700', 
+          color: COLORS.text, 
+          marginBottom: '24px',
+          background: COLORS.primary.gradient,
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
           Quick Actions
         </h2>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          {['users', 'companies', 'content', 'analytics', 'settings'].map(action => (
+        <div style={{ 
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '16px'
+        }}>
+          {[
+            { key: 'users', label: 'User Management', icon: '👥' },
+            { key: 'companies', label: 'Company Management', icon: '🏢' },
+            { key: 'content', label: 'Content Management', icon: '📝' },
+            { key: 'analytics', label: 'Analytics & Reports', icon: '📈' },
+            { key: 'settings', label: 'System Settings', icon: '⚙️' }
+          ].map(action => (
             <button
-              key={action}
-              onClick={() => handleTabChange(action)}
+              key={action.key}
+              onClick={() => handleTabChange(action.key)}
               style={{
-                background: 'linear-gradient(135deg, #DC2626 0%, #B91C1C 100%)',
+                background: COLORS.buttonGradient,
                 color: 'white',
                 border: 'none',
-                padding: '0.75rem 1.5rem',
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                fontWeight: '500',
+                padding: '20px 24px',
+                borderRadius: '16px',
+                fontSize: '1rem',
+                fontWeight: '600',
                 cursor: 'pointer',
-                textTransform: 'capitalize'
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 4px 16px rgba(79, 142, 247, 0.3)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '12px',
+                textAlign: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = COLORS.buttonHoverGradient;
+                e.target.style.transform = 'translateY(-3px) scale(1.02)';
+                e.target.style.boxShadow = '0 8px 32px rgba(79, 142, 247, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = COLORS.buttonGradient;
+                e.target.style.transform = 'translateY(0) scale(1)';
+                e.target.style.boxShadow = '0 4px 16px rgba(79, 142, 247, 0.3)';
               }}
             >
-              Manage {action}
+              <span style={{ fontSize: '1.2rem' }}>{action.icon}</span>
+              {action.label}
             </button>
           ))}
         </div>
@@ -335,56 +522,119 @@ const AdminDashboard = () => {
 
       {/* Recent Activity */}
       <div>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: '600', color: '#1B263B', marginBottom: '1rem' }}>
-          Recent Activity
-        </h2>
         <div style={{
-          background: 'white',
-          borderRadius: '16px',
-          boxShadow: '0 4px 16px rgba(27, 38, 59, 0.08)',
-          overflow: 'hidden'
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '24px'
         }}>
-          {activityLog.slice(0, 5).map((activity, index) => (
-            <div key={activity.id} style={{
-              padding: '1rem 1.5rem',
-              borderBottom: index < 4 ? '1px solid #E5E7EB' : 'none',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
+          <h2 style={{ 
+            fontSize: '1.75rem', 
+            fontWeight: '700', 
+            color: COLORS.text, 
+            margin: 0,
+            background: COLORS.primary.gradient,
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Recent Activity
+          </h2>
+          <button
+            style={{
+              background: 'transparent',
+              border: `2px solid ${COLORS.primary.main}`,
+              color: COLORS.primary.main,
+              padding: '8px 16px',
+              borderRadius: '12px',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.background = COLORS.primary.main;
+              e.target.style.color = 'white';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.background = 'transparent';
+              e.target.style.color = COLORS.primary.main;
+            }}
+          >
+            View All
+          </button>
+        </div>
+        <div style={{
+          background: COLORS.cardBackground,
+          borderRadius: '20px',
+          boxShadow: '0 10px 40px rgba(79, 142, 247, 0.1)',
+          border: `1px solid ${COLORS.border}`,
+          overflow: 'hidden',
+          backdropFilter: 'blur(10px)'
+        }}>
+          {activityLog.length === 0 ? (
+            <div style={{
+              padding: '40px',
+              textAlign: 'center',
+              color: COLORS.subText
             }}>
-              <div>
-                <p style={{ margin: '0 0 0.25rem', fontWeight: '500', color: '#1B263B' }}>
-                  {activity.action}
-                </p>
-                <p style={{ margin: '0', fontSize: '0.875rem', color: '#6B7280' }}>
-                  by {activity.user}
-                </p>
-              </div>
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <span style={{
-                  padding: '0.25rem 0.5rem',
-                  borderRadius: '12px',
-                  fontSize: '0.75rem',
-                  fontWeight: '500',
-                  background: activity.type === 'security' ? '#FEE2E2' : 
-                           activity.type === 'admin' ? '#DBEAFE' :
-                           activity.type === 'content' ? '#D1FAE5' : '#F3F4F6',
-                  color: activity.type === 'security' ? '#DC2626' : 
-                         activity.type === 'admin' ? '#2563EB' :
-                         activity.type === 'content' ? '#059669' : '#6B7280'
-                }}>
-                  {activity.type}
-                </span>
-                <span style={{ fontSize: '0.875rem', color: '#6B7280' }}>
-                  {activity.timestamp}
-                </span>
-              </div>
+              <p style={{ fontSize: '1.1rem', fontWeight: '500' }}>No recent activity</p>
+              <p style={{ marginTop: '8px', opacity: 0.8 }}>System activity will appear here</p>
             </div>
-          ))}
+          ) : (
+            activityLog.slice(0, 5).map((activity, index) => (
+              <div 
+                key={activity.id} 
+                style={{
+                  padding: '20px 24px',
+                  borderBottom: index < 4 ? `1px solid ${COLORS.border}` : 'none',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(79, 142, 247, 0.05)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                }}
+              >
+                <div>
+                  <p style={{ margin: '0 0 8px', fontWeight: '600', color: COLORS.text, fontSize: '1rem' }}>
+                    {activity.action}
+                  </p>
+                  <p style={{ margin: '0', fontSize: '0.875rem', color: COLORS.subText, fontWeight: '500' }}>
+                    by {activity.user}
+                  </p>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px'
+                }}>
+                  <span style={{
+                    padding: '8px 12px',
+                    borderRadius: '16px',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    background: activity.type === 'security' ? '#FEE2E2' : 
+                             activity.type === 'admin' ? COLORS.light.secondary :
+                             activity.type === 'content' ? '#D1FAE5' : '#F3F4F6',
+                    color: activity.type === 'security' ? '#DC2626' : 
+                           activity.type === 'admin' ? COLORS.primary.secondary :
+                           activity.type === 'content' ? COLORS.accent.green : COLORS.subText,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    {activity.type}
+                  </span>
+                  <span style={{ fontSize: '0.875rem', color: COLORS.subText, fontWeight: '500' }}>
+                    {activity.timestamp}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
@@ -1139,38 +1389,76 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div style={{
+    <div className="admin-dashboard" style={{
       display: 'flex',
       minHeight: '100vh',
-      background: '#F4F6FB',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+      background: COLORS.background,
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      position: 'relative'
     }}>
+      {/* Mobile Overlay */}
+      <div 
+        className={`admin-overlay ${sidebarOpen ? 'active' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      
       {/* Sidebar */}
-      <div style={{
+      <div className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`} style={{
         width: '280px',
-        background: '#DC2626',
+        minWidth: '280px',
+        background: COLORS.sidebarGradient,
         color: 'white',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        boxShadow: '0 0 40px rgba(79, 142, 247, 0.15)',
+        borderRadius: '0 24px 24px 0',
+        position: 'sticky',
+        top: 0,
+        height: '100vh',
+        overflow: 'auto'
       }}>
         <div style={{
-          padding: '2rem 1.5rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+          padding: '32px 24px',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '0 24px 0 0',
+          backdropFilter: 'blur(10px)',
+          position: 'relative'
         }}>
+          <button
+            style={{
+              position: 'absolute',
+              top: '16px',
+              right: '16px',
+              background: 'none',
+              border: 'none',
+              color: 'white',
+              fontSize: '1.5rem',
+              cursor: 'pointer',
+              padding: '4px',
+              display: 'none'
+            }}
+            className="mobile-close-btn"
+            onClick={() => setSidebarOpen(false)}
+          >
+            ×
+          </button>
           <h1 style={{
             color: 'white',
-            fontSize: '1.5rem',
-            fontWeight: '700',
-            margin: '0'
+            fontSize: '1.6rem',
+            fontWeight: '800',
+            margin: '0 0 8px 0',
+            letterSpacing: '-0.02em'
           }}>StudyPart Admin</h1>
           <p style={{
-            color: 'rgba(255, 255, 255, 0.8)',
-            fontSize: '0.875rem',
-            margin: '0.5rem 0 0'
+            color: 'rgba(255, 255, 255, 0.9)',
+            fontSize: '0.9rem',
+            margin: '0',
+            fontWeight: '500'
           }}>System Administration</p>
         </div>
 
-        <nav style={{ flex: 1, padding: '1rem 0' }}>
+        <nav style={{ flex: 1, padding: '24px 16px' }}>
           {[
             { key: 'dashboard', label: 'Dashboard Overview', icon: '📊' },
             { key: 'student-registrations', label: 'Student Registrations', icon: '🎓' },
@@ -1186,20 +1474,33 @@ const AdminDashboard = () => {
                 display: 'flex',
                 alignItems: 'center',
                 width: '100%',
-                padding: '1rem 1.5rem',
-                background: activeTab === item.key ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                padding: '16px 20px',
+                margin: '4px 0',
+                background: activeTab === item.key ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
                 color: 'white',
-                border: 'none',
+                border: activeTab === item.key ? '1px solid rgba(255, 255, 255, 0.3)' : '1px solid transparent',
                 textAlign: 'left',
                 fontSize: '1rem',
+                fontWeight: activeTab === item.key ? '600' : '500',
                 cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                borderLeft: activeTab === item.key ? '4px solid white' : '4px solid transparent',
-                gap: '0.75rem'
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                borderRadius: '12px',
+                backdropFilter: activeTab === item.key ? 'blur(10px)' : 'none',
+                gap: '12px'
               }}
               onClick={() => handleTabChange(item.key)}
-              onMouseEnter={(e) => e.target.style.background = 'rgba(255, 255, 255, 0.1)'}
-              onMouseLeave={(e) => e.target.style.background = activeTab === item.key ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+              onMouseEnter={(e) => {
+                if (activeTab !== item.key) {
+                  e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeTab !== item.key) {
+                  e.target.style.background = 'transparent';
+                  e.target.style.borderColor = 'transparent';
+                }
+              }}
             >
               <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
               {item.label}
@@ -1208,52 +1509,203 @@ const AdminDashboard = () => {
         </nav>
 
         <div style={{
-          padding: '1rem 1.5rem',
+          padding: '24px',
           borderTop: '1px solid rgba(255, 255, 255, 0.1)'
         }}>
           <button style={{
             display: 'flex',
             alignItems: 'center',
             width: '100%',
-            padding: '0.75rem',
+            padding: '16px',
             background: 'rgba(255, 255, 255, 0.1)',
             color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '0.875rem',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            borderRadius: '12px',
+            fontSize: '1rem',
+            fontWeight: '500',
             cursor: 'pointer',
-            gap: '0.5rem'
-          }}>
-            <span>🚪</span>
+            gap: '12px',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            backdropFilter: 'blur(10px)'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+            e.target.style.transform = 'translateY(-2px)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+            e.target.style.transform = 'translateY(0)';
+          }}
+          >
+            <span style={{ fontSize: '1.2rem' }}>🚪</span>
             Logout
           </button>
         </div>
       </div>
 
       {/* Main Content */}
-      <div style={{
+      <div className="admin-main-content" style={{
         flex: 1,
-        padding: '2rem',
-        overflow: 'auto'
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'linear-gradient(135deg, #F9FBFF 0%, #EAF1FB 100%)',
+        minHeight: '100vh',
+        overflow: 'hidden'
       }}>
-        {activeTab === 'dashboard' && renderDashboardOverview()}
-        {activeTab === 'student-registrations' && <StudentRegistrationManagement />}
-        {activeTab === 'users' && renderUserManagement()}
-        {activeTab === 'companies' && renderCompanyManagement()}
-        {activeTab === 'content' && renderContentManagement()}
-        {activeTab === 'analytics' && renderAnalytics()}
-        {activeTab === 'settings' && renderSettings()}
+        {/* Header */}
+        <header style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          boxShadow: '0 4px 20px rgba(79, 142, 247, 0.08)',
+          padding: '24px 32px',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(79, 142, 247, 0.08)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 100
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '16px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <button
+                className="mobile-menu-btn"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: COLORS.primary.main,
+                  padding: '8px'
+                }}
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+              >
+                ☰
+              </button>
+              <h1 style={{
+                fontSize: window.innerWidth < 768 ? '1.5rem' : '2.2rem',
+                fontWeight: '800',
+                color: COLORS.text,
+                letterSpacing: '-0.02em',
+                background: COLORS.primary.gradient,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                margin: 0
+              }}>
+                {activeTab === 'dashboard' ? 'Admin Dashboard' :
+                 activeTab === 'student-registrations' ? 'Student Registrations' :
+                 activeTab === 'users' ? 'User Management' :
+                 activeTab === 'companies' ? 'Company Management' :
+                 activeTab === 'content' ? 'Content Management' :
+                 activeTab === 'analytics' ? 'Analytics & Reports' :
+                 activeTab === 'settings' ? 'System Settings' : 'Admin Dashboard'}
+              </h1>
+            </div>
+            <div style={{
+              fontSize: '0.875rem',
+              color: COLORS.subText,
+              fontWeight: '500',
+              display: window.innerWidth < 768 ? 'none' : 'block'
+            }}>
+              {new Date().toLocaleDateString('en-US', { 
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </div>
+          </div>
+        </header>
+
+        <main style={{ 
+          flex: 1,
+          padding: window.innerWidth < 768 ? '16px' : '32px',
+          overflow: 'auto',
+          scrollBehavior: 'smooth'
+        }}>
+          <div style={{
+            maxWidth: '1400px',
+            margin: '0 auto',
+            width: '100%'
+          }}>
+            {activeTab === 'dashboard' && renderDashboardOverview()}
+            {activeTab === 'student-registrations' && <StudentRegistrationManagement />}
+            {activeTab === 'users' && renderUserManagement()}
+            {activeTab === 'companies' && renderCompanyManagement()}
+            {activeTab === 'content' && renderContentManagement()}
+            {activeTab === 'analytics' && renderAnalytics()}
+            {activeTab === 'settings' && renderSettings()}
+          </div>
+        </main>
       </div>
     </div>
   );
 };
 
-// Add CSS animation for loading spinner
+// Add CSS for animations and responsive design
 const style = document.createElement('style');
 style.textContent = `
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+  
+  .admin-dashboard {
+    position: relative;
+  }
+  
+  @media (max-width: 768px) {
+    .admin-sidebar {
+      position: fixed !important;
+      left: -280px;
+      top: 0;
+      z-index: 1000;
+      transition: left 0.3s ease;
+    }
+    
+    .admin-sidebar.open {
+      left: 0;
+    }
+    
+    .admin-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+    
+    .admin-overlay.active {
+      display: block;
+    }
+    
+    .admin-main-content {
+      margin-left: 0 !important;
+    }
+    
+    .mobile-menu-btn {
+      display: block !important;
+    }
+    
+    .mobile-close-btn {
+      display: block !important;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .mobile-menu-btn {
+      display: none !important;
+    }
+    
+    .mobile-close-btn {
+      display: none !important;
+    }
   }
 `;
 document.head.appendChild(style);
